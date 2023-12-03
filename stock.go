@@ -50,6 +50,12 @@ func (s *Stock) Populate() (*Stock, error) {
 		}
 	})
 
+	c.OnHTML("tr", func(h *colly.HTMLElement) {
+		h.ForEach("td", func(i int, t *colly.HTMLElement) {
+			fmt.Println(t.Text)
+		})
+	})
+
 	c.OnError(func(r *colly.Response, e error) {
 		err = fmt.Errorf("error making HTTP request: %v", e)
 	})
