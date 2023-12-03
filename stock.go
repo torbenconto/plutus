@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -50,12 +51,12 @@ func (s *Stock) Populate() (*Stock, error) {
 		switch h.Attr("data-field") {
 		case "regularMarketPrice":
 			if isPrimary(h.Attr("active")) {
-				s.Price = parseNumber(h.Text)
+				s.Price, _ = strconv.ParseFloat(h.Text, 64)
 			}
 
 		case "regularMarketChange":
 			if isPrimary(h.Attr("active")) {
-				s.Change = parseNumber(h.Text)
+				s.Change, _ = strconv.ParseFloat(h.Text, 64)
 			}
 		}
 	})
@@ -72,14 +73,15 @@ func (s *Stock) Populate() (*Stock, error) {
 
 				field := val.FieldByName(YFTableMap[values[0]])
 
-				if field.Kind() == reflect.String {
+				switch field.Kind() {
+				case reflect.String:
 					field.SetString(values[1])
-				} else if field.Kind() == reflect.Float64 {
-					num := parseNumber(values[1])
-					field.SetFloat(num)
-				} else if field.Kind() == reflect.Int {
-					num := parseInt(values[1])
-					field.SetInt(int64(num))
+				case reflect.Float64:
+					fieldFloat, _ := strconv.ParseFloat(values[1], 64)
+					field.SetFloat(fieldFloat)
+				case reflect.Int:
+					fieldInt, _ := strconv.Atoi(values[1])
+					field.SetInt(int64(fieldInt))
 				}
 
 				values = nil
@@ -97,16 +99,4 @@ func (s *Stock) Populate() (*Stock, error) {
 	}
 
 	return s, nil
-}
-
-func parseNumber(s string) float64 {
-	var result float64
-	fmt.Sscanf(s, "%f", &result)
-	return result
-}
-
-func parseInt(s string) int {
-	var result int
-	fmt.Sscanf(s, "%d", &result)
-	return result
 }
