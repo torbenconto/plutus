@@ -26,25 +26,24 @@ func (s *Stock) Populate() (*Stock, error) {
 
 	var err error
 
-	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
+	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
+	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
 		if h.Attr("data-field") == "regularMarketPrice" && h.Attr("active") == "" {
 			s.Price, err = strconv.ParseFloat(h.Text, 64)
 			if err != nil {
-				err = fmt.Errorf("error parsing price: %e", err)
+				err = fmt.Errorf("error parsing price: %v", err)
 			}
 		}
 	})
 
-	if err != nil {
-		return nil, err
-	}
+	c.OnError(func(r *colly.Response, e error) {
+		err = fmt.Errorf("error making HTTP request: %v", e)
+	})
 
-	err = c.Visit("https://finance.yahoo.com/quote/amd")
-
+	err = c.Visit(url)
 	if err != nil {
-		err = fmt.Errorf("error scraping data: %e", err)
-		return nil, err
+		return nil, fmt.Errorf("error scraping data: %v", err)
 	}
 
 	return s, nil
