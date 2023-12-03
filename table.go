@@ -1,4 +1,4 @@
-package main
+package plutus
 
 // Map of table names to corresponding Stock Struct values (yahoo finance)
 var YFTableMap = map[string]string{

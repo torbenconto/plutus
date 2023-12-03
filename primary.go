@@ -1,4 +1,4 @@
-package main
+package plutus
 
 // Helper function to check if the provided attribute belongs to the primary stock on the page
 func isPrimary(attr string) bool {
