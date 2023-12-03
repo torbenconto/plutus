@@ -1,21 +1,9 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/gocolly/colly/v2"
-)
+import "fmt"
 
 func main() {
-	c := colly.NewCollector()
+	stock, _ := NewStock("amd")
 
-	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
-
-		if h.Attr("data-field") == "regularMarketPrice" && h.Attr("active") == "" {
-			fmt.Println(h.Text)
-		}
-	})
-
-	c.Visit("https://finance.yahoo.com/quote/amd")
-
+	fmt.Println(stock.Price)
 }
