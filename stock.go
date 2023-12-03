@@ -22,17 +22,30 @@ func NewStock(Ticker string) (*Stock, error) {
 }
 
 func (s *Stock) Populate() (*Stock, error) {
+	// New colly scraper
 	c := colly.NewCollector()
 
 	var err error
 
+	// Format url string
 	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
 	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
-		if h.Attr("data-field") == "regularMarketPrice" && h.Attr("active") == "" {
-			s.Price, err = strconv.ParseFloat(h.Text, 64)
-			if err != nil {
-				err = fmt.Errorf("error parsing price: %v", err)
+		switch h.Attr("data-field") {
+		case "regularMarketPrice":
+			if isPrimary(h.Attr("active")) {
+				s.Price, err = strconv.ParseFloat(h.Text, 64)
+				if err != nil {
+					err = fmt.Errorf("error parsing price: %v", err)
+				}
+			}
+
+		case "regularMarketChange":
+			if isPrimary(h.Attr("active")) {
+				s.Change, err = strconv.ParseFloat(h.Text, 64)
+				if err != nil {
+					err = fmt.Errorf("error parsing change: %v", err)
+				}
 			}
 		}
 	})
