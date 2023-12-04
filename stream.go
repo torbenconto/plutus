@@ -2,8 +2,8 @@ package plutus
 
 import "time"
 
-func Stream(s *Stock, delay int) <-chan string {
-	stream := make(chan string)
+func Stream(s *Stock, delay int) <-chan *Stock {
+	stream := make(chan *Stock)
 
 	delayT := time.Duration(delay) * time.Millisecond
 
@@ -11,7 +11,8 @@ func Stream(s *Stock, delay int) <-chan string {
 		defer close(stream)
 
 		for {
-			data := "Your constant data"
+			s.Populate()
+			data := s
 
 			stream <- data
 
