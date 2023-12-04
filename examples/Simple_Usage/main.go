@@ -41,5 +41,5 @@ func main() {
 
 	// If you want a constant stream of data on the stock you can use the Stream method on the stock
 	// An example of this method is contained here
-	// https://github.com/torbenconto/plutus/blob/master/examples/Stock%20Data%20Stream/main.go
+	// https://github.com/torbenconto/plutus/blob/master/examples/Stock_Data_Stream/main.go
 }
