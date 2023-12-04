@@ -10,10 +10,10 @@ Download the library into your existing golang project
 
 Create a new stock object using the ticker of the stock you want data on
 ```go
-    stock, err := plutus.NewStock("AMD")
-	if err != nil {
-		fmt.Printf("An error occured: %e", err)
-	}
+stock, err := plutus.NewStock("AMD")
+if err != nil {
+	fmt.Printf("An error occured: %e", err)
+}
 ```
 Done!, now you can access many different aspects of the stock including price, volume, market cap, and many others!
 ```go
