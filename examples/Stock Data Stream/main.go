@@ -17,7 +17,7 @@ func main() {
 	delayInMS := 1000
 
 	// Call stream func using Stock object and a given delay
-	stream := plutus.Stream(stock, delayInMS)
+	stream := stock.Stream(delayInMS)
 
 	// Get updated data and print out most recent stock price. Runs infinently and returns the newest avalible stock data in the form of a plutus.Stock struct
 	data := <-stream
