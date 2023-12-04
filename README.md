@@ -23,3 +23,12 @@ Done!, now you can access many different aspects of the stock including price, v
 ### Example based documentation
 Please use the provided examples to guide you to using plutus to it's full potential.
 #### https://github.com/torbenconto/plutus/blob/master/examples
+
+
+# Future Features
+- [-] Related News Articles
+- [-] Historical Data
+- [-] Price Estimates
+
+
+And More..
