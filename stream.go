@@ -2,7 +2,8 @@ package plutus
 
 import "time"
 
-// Return a constant stream of updated data from the stock using goroutines, check
+// Return a constant stream of updated data from the stock using goroutines
+// - https://github.com/torbenconto/plutus/blob/master/examples/Stock%20Data%20Stream/stream.go (example on how to use)
 func Stream(s *Stock, delay int) <-chan *Stock {
 	stream := make(chan *Stock)
 
