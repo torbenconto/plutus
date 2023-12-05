@@ -39,6 +39,7 @@ func NewStock(Ticker string) (*Stock, error) {
 	return stock.Populate()
 }
 
+// Fill in the fields of the Stock struct with data scraped from yahoo finance
 func (s *Stock) Populate() (*Stock, error) {
 	// New colly scraper
 	c := colly.NewCollector()
@@ -48,35 +49,50 @@ func (s *Stock) Populate() (*Stock, error) {
 	// Format url string
 	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
+	// Loop over <fin-streamer> elements, on yahoo finance these contain price data for the stock
 	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
 		switch h.Attr("data-field") {
+		// If data-field = "regularMarketPrice"
 		case "regularMarketPrice":
+			// Check if the price belongs to the main stock we want data on, not Dow Jones or SPY or something
 			if isPrimary(h.Attr("active")) {
+				// Parse float into S.price
 				s.Price, _ = strconv.ParseFloat(h.Text, 64)
 			}
 
+		// If data-field = "regularMarketPrice"
 		case "regularMarketChange":
 			if isPrimary(h.Attr("active")) {
+				// Parse float of price from text
 				chng, _ := strconv.ParseFloat(h.Text, 64)
 
+				// Set ChangePrice field
 				s.ChangePrice = chng
+
+				// Set ChangePercent field to a rounded percent change
 				s.ChangePercent = roundFloat((chng/s.Price)*100, 2)
 			}
 		}
 	})
 
+	// Loop over rows of the table, on yahoo finance this contains extra data about the stock
 	c.OnHTML("tr", func(h *colly.HTMLElement) {
+		// Create values array
 		var values []string
 
+		// For each table item
 		h.ForEach("td", func(i int, t *colly.HTMLElement) {
 			text := t.Text
 			values = append(values, text)
 
+			// On yf there are 2 tds of importance in each tr, the first one has the title of the data and the second one has the data, by checking if the length of the values is 2, we bundle them together
 			if len(values) == 2 {
 				val := reflect.ValueOf(s).Elem()
 
+				// Translate the imperfect name of the title field into the name of the struct
 				field := val.FieldByName(YFTableMap[values[0]])
 
+				// Switch the type of the data to make sure types match for insertion into the struct
 				switch field.Kind() {
 				case reflect.String:
 					field.SetString(values[1])
@@ -88,11 +104,13 @@ func (s *Stock) Populate() (*Stock, error) {
 					field.SetInt(int64(fieldInt))
 				}
 
+				// reset values array to bundle the next 2 tds
 				values = nil
 			}
 		})
 	})
 
+	// Self explanatory
 	c.OnError(func(r *colly.Response, e error) {
 		err = fmt.Errorf("error making HTTP request: %v", e)
 	})
