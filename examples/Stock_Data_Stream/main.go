@@ -20,6 +20,9 @@ func main() {
 	stream := stock.Stream(delayInMS)
 
 	// Get updated data and print out most recent stock price. Runs infinently and returns the newest avalible stock data in the form of a plutus.Stock struct
-	data := <-stream
-	fmt.Println(data.Price)
+	for {
+		data := <-stream
+		fmt.Println(data.Price, data.ChangePercent)
+	}
+
 }

@@ -11,7 +11,8 @@ import (
 type Stock struct {
 	Ticker                  string
 	Price                   float64
-	Change                  float64
+	ChangePrice             float64
+	ChangePercent           float64
 	PrevClose               float64
 	OpenPrice               float64
 	BidPrice                float64
@@ -56,7 +57,10 @@ func (s *Stock) Populate() (*Stock, error) {
 
 		case "regularMarketChange":
 			if isPrimary(h.Attr("active")) {
-				s.Change, _ = strconv.ParseFloat(h.Text, 64)
+				chng, _ := strconv.ParseFloat(h.Text, 64)
+
+				s.ChangePrice = chng
+				s.ChangePercent = roundFloat((chng/s.Price)*100, 2)
 			}
 		}
 	})
