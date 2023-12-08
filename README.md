@@ -1,4 +1,4 @@
-![logo](./assets/DALL·E%202023-12-03%2020.30.35%20-%20a%2019th%20century%20greek%20oil%20painting.webp)
+![logo](./assets/logo.webp)
 ## Plutus
 *A stock data centered golang library*
 
