@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -68,9 +69,19 @@ func (s *Stock) Populate() (*Stock, error) {
 
 				// Set ChangePrice field
 				s.ChangePrice = chng
+			}
 
-				// Set ChangePercent field to a rounded percent change
-				s.ChangePercent = roundFloat((chng/s.Price)*100, 2)
+		case "regularMarketChangePercent":
+			if isPrimary(h.Attr("active")) {
+
+				replacer := strings.NewReplacer("%", "", "+", "", "-", "", "(", "", ")", "")
+				percentString := replacer.Replace(h.Text)
+
+				fmt.Println(percentString)
+
+				percentFloat, _ := strconv.ParseFloat(percentString, 64)
+
+				s.ChangePercent = percentFloat
 			}
 		}
 	})
