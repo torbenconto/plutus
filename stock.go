@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -33,98 +32,59 @@ type Stock struct {
 	Collector               *colly.Collector
 }
 
-func NewStock(Ticker string) (*Stock, error) {
+// NewStock creates a new Stock instance for the given ticker.
+func NewStock(ticker string) (*Stock, error) {
 	c := colly.NewCollector()
 
 	stock := &Stock{
-		Ticker:    Ticker,
+		Ticker:    ticker,
 		Collector: c,
 	}
 
 	return stock.Populate()
 }
 
-// Fill in the fields of the Stock struct with data scraped from yahoo finance
+// Populate fills in the fields of the Stock struct with data scraped from Yahoo Finance.
 func (s *Stock) Populate() (*Stock, error) {
 	var err error
 
-	// Format url string
 	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
-	// Loop over <fin-streamer> elements, on yahoo finance these contain price data for the stock
 	s.Collector.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
 		switch h.Attr("data-field") {
-		// If data-field = "regularMarketPrice"
-		case "regularMarketPrice":
-			// Check if the price belongs to the main stock we want data on, not Dow Jones or SPY or something
+		case "regularMarketPrice", "preMarketPrice", "postMarketPrice":
 			if isPrimary(h.Attr("active")) {
-				// Parse float into S.price
 				s.Price, _ = strconv.ParseFloat(h.Text, 64)
 			}
-
-		// If data-field = "regularMarketPrice"
-		case "regularMarketChange":
+		case "regularMarketChange", "preMarketChange", "postMarketChange":
 			if isPrimary(h.Attr("active")) {
-				// Parse float of price from text
 				chng, _ := strconv.ParseFloat(h.Text, 64)
-
-				// Set ChangePrice field
 				s.ChangePrice = chng
 			}
-
-		case "regularMarketChangePercent":
+		case "regularMarketChangePercent", "preMarketChangePercent", "postMarketChangePercent":
 			if isPrimary(h.Attr("active")) {
-
-				replacer := strings.NewReplacer("%", "", "+", "", "-", "", "(", "", ")", "")
-				percentString := replacer.Replace(h.Text)
-
-				fmt.Println(percentString)
-
+				percentString := cleanPercentage(h.Text)
 				percentFloat, _ := strconv.ParseFloat(percentString, 64)
-
 				s.ChangePercent = percentFloat
 			}
 		}
 	})
 
-	// Loop over rows of the table, on yahoo finance this contains extra data about the stock
 	s.Collector.OnHTML("tr", func(h *colly.HTMLElement) {
-		// Create values array
 		var values []string
 
-		// For each table item
 		h.ForEach("td", func(i int, t *colly.HTMLElement) {
-			text := t.Text
-			values = append(values, text)
+			values = append(values, t.Text)
 
-			// On yf there are 2 tds of importance in each tr, the first one has the title of the data and the second one has the data, by checking if the length of the values is 2, we bundle them together
 			if len(values) == 2 {
-				val := reflect.ValueOf(s).Elem()
-
-				// Translate the imperfect name of the title field into the name of the struct
-				field := val.FieldByName(YFTableMap[values[0]])
-
-				// Switch the type of the data to make sure types match for insertion into the struct
-				switch field.Kind() {
-				case reflect.String:
-					field.SetString(values[1])
-				case reflect.Float64:
-					fieldFloat, _ := strconv.ParseFloat(values[1], 64)
-					field.SetFloat(fieldFloat)
-				case reflect.Int:
-					fieldInt, _ := strconv.Atoi(values[1])
-					field.SetInt(int64(fieldInt))
-				}
-
-				// reset values array to bundle the next 2 tds
+				s.setField(YFTableMap[values[0]], values[1])
 				values = nil
 			}
 		})
 	})
 
-	// Self explanatory
 	s.Collector.OnError(func(r *colly.Response, e error) {
-		err = fmt.Errorf("error making HTTP request: %v", e)
+		err = fmt.Errorf("HTTP request error: %v", e)
 	})
 
 	err = s.Collector.Visit(url)
@@ -133,4 +93,21 @@ func (s *Stock) Populate() (*Stock, error) {
 	}
 
 	return s, nil
+}
+
+// Helper function to set the struct field based on its type.
+func (s *Stock) setField(fieldName string, value string) {
+	val := reflect.ValueOf(s).Elem()
+	field := val.FieldByName(fieldName)
+
+	switch field.Kind() {
+	case reflect.String:
+		field.SetString(value)
+	case reflect.Float64:
+		fieldFloat, _ := strconv.ParseFloat(value, 64)
+		field.SetFloat(fieldFloat)
+	case reflect.Int:
+		fieldInt, _ := strconv.Atoi(value)
+		field.SetInt(int64(fieldInt))
+	}
 }
