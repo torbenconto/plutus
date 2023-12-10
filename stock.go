@@ -30,11 +30,15 @@ type Stock struct {
 	ForwardDividendAndYield string
 	ExDividendDate          string
 	OneYearTargetEst        float64
+	Collector               *colly.Collector
 }
 
 func NewStock(Ticker string) (*Stock, error) {
+	c := colly.NewCollector()
+
 	stock := &Stock{
-		Ticker: Ticker,
+		Ticker:    Ticker,
+		Collector: c,
 	}
 
 	return stock.Populate()
@@ -42,16 +46,13 @@ func NewStock(Ticker string) (*Stock, error) {
 
 // Fill in the fields of the Stock struct with data scraped from yahoo finance
 func (s *Stock) Populate() (*Stock, error) {
-	// New colly scraper
-	c := colly.NewCollector()
-
 	var err error
 
 	// Format url string
 	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
 	// Loop over <fin-streamer> elements, on yahoo finance these contain price data for the stock
-	c.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
+	s.Collector.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
 		switch h.Attr("data-field") {
 		// If data-field = "regularMarketPrice"
 		case "regularMarketPrice":
@@ -87,7 +88,7 @@ func (s *Stock) Populate() (*Stock, error) {
 	})
 
 	// Loop over rows of the table, on yahoo finance this contains extra data about the stock
-	c.OnHTML("tr", func(h *colly.HTMLElement) {
+	s.Collector.OnHTML("tr", func(h *colly.HTMLElement) {
 		// Create values array
 		var values []string
 
@@ -122,11 +123,11 @@ func (s *Stock) Populate() (*Stock, error) {
 	})
 
 	// Self explanatory
-	c.OnError(func(r *colly.Response, e error) {
+	s.Collector.OnError(func(r *colly.Response, e error) {
 		err = fmt.Errorf("error making HTTP request: %v", e)
 	})
 
-	err = c.Visit(url)
+	err = s.Collector.Visit(url)
 	if err != nil {
 		return nil, fmt.Errorf("error scraping data: %v", err)
 	}
