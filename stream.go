@@ -13,8 +13,8 @@ func (s *Stock) Stream(delay int) <-chan *Stock {
 		defer close(stream)
 
 		for {
-			s.Populate()
-			data := s
+			// This is very bad i think
+			data, _ := NewStock(s.Ticker)
 
 			stream <- data
 
