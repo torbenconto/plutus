@@ -10,6 +10,6 @@ func isPrimary(attr string) bool {
 
 // Helper function to clean percentage strings.
 func cleanPercentage(s string) string {
-	replacer := strings.NewReplacer("%", "", "+", "", "-", "", "(", "", ")", "")
+	replacer := strings.NewReplacer("%", "", "(", "", ")", "")
 	return replacer.Replace(s)
 }
