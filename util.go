@@ -8,8 +8,8 @@ func isPrimary(attr string) bool {
 	return attr == "" || strings.HasPrefix(attr, "pre") || strings.HasPrefix(attr, "post")
 }
 
-// Helper function to clean percentage strings.
-func cleanPercentage(s string) string {
-	replacer := strings.NewReplacer("%", "", "(", "", ")", "")
+// Helper function to clean number strings.
+func cleanNumber(s string) string {
+	replacer := strings.NewReplacer("%", "", "(", "", ")", "", ",", "")
 	return replacer.Replace(s)
 }

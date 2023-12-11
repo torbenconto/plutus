@@ -15,8 +15,8 @@ type Stock struct {
 	ChangePercent           float64
 	PrevClose               float64
 	OpenPrice               float64
-	BidPrice                float64
-	AskPrice                float64
+	BidPrice                string
+	AskPrice                string
 	DayRange                string
 	FiftyTwoWeekRange       string
 	Volume                  int
@@ -63,7 +63,7 @@ func (s *Stock) Populate() (*Stock, error) {
 			}
 		case "regularMarketChangePercent", "preMarketChangePercent", "postMarketChangePercent":
 			if isPrimary(h.Attr("active")) {
-				percentString := cleanPercentage(h.Text)
+				percentString := cleanNumber(h.Text)
 				percentFloat, _ := strconv.ParseFloat(percentString, 64)
 				s.ChangePercent = percentFloat
 			}
@@ -100,10 +100,13 @@ func (s *Stock) setField(fieldName string, value string) {
 	val := reflect.ValueOf(s).Elem()
 	field := val.FieldByName(fieldName)
 
+	value = cleanNumber(value)
+
 	switch field.Kind() {
 	case reflect.String:
 		field.SetString(value)
 	case reflect.Float64:
+		fmt.Println(fieldName, value)
 		fieldFloat, _ := strconv.ParseFloat(value, 64)
 		field.SetFloat(fieldFloat)
 	case reflect.Int:
