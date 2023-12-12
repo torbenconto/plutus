@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// Create new Stock object
-	stock, err := plutus.NewStock("AMD")
+	stock, err := plutus.NewStock("AMD", plutus.YahooFinanceProvider)
 	if err != nil {
 		fmt.Println("Error fetching data for stock")
 	}

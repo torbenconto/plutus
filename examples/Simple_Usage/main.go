@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	// Create a stock object using a ticker, the stock will be auto populated with data when created, no need to call any other methods
+	// Create a stock object using a ticker and provider, the stock will be auto populated with data when created, no need to call any other methods
 	// Returns an error and a plutus.Stock struct, error details what went wrong with fetching data
 	//                  no need to capitalize ticker
 	//                              |
 	//                              v
-	stock, err := plutus.NewStock("amd")
+	stock, err := plutus.NewStock("amd", plutus.YahooFinanceProvider)
 	if err != nil {
 		fmt.Printf("An error occured: %e", err)
 	}
