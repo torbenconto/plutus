@@ -8,9 +8,9 @@ Download the library into your existing golang project
     go get -u github.com/torbenconto/plutus@latest
 ```
 
-Create a new stock object using the ticker of the stock you want data on
+Create a new stock object using the ticker of the stock you want data on and the website you want data from (in this case yahoo finance is used)
 ```go
-stock, err := plutus.NewStock("AMD")
+stock, err := plutus.NewStock("AMD", plutus.YahooFinanceProvider)
 if err != nil {
 	fmt.Printf("An error occured: %e", err)
 }
