@@ -14,7 +14,7 @@ type p_YahooFinanceProvider struct{}
 var YahooFinanceProvider *p_YahooFinanceProvider = &p_YahooFinanceProvider{}
 
 // Populate fills in the fields of the Stock struct with data scraped from Yahoo Finance.
-func (p *p_YahooFinanceProvider) Populate(s *Stock) (*Stock, error) {
+func (p *p_YahooFinanceProvider) Populate(s *Stock, apiKey ...string) (*Stock, error) {
 	var err error
 
 	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)

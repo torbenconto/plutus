@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -34,21 +35,16 @@ type Stock struct {
 }
 
 // NewStock creates a new Stock instance for the given ticker.
-func NewStock(ticker string, provider StockDataProvider) (*Stock, error) {
+func NewStock(ticker string, provider StockDataProvider, apiKey ...string) (*Stock, error) {
 	c := colly.NewCollector()
 
 	stock := &Stock{
-		Ticker:    ticker,
+		Ticker:    strings.ToUpper(ticker),
 		Collector: c,
 		Provider:  provider,
 	}
 
-	return stock.Populate()
-}
-
-// Populate fills in the fields of the Stock struct using the specified data provider.
-func (s *Stock) Populate() (*Stock, error) {
-	return s.Provider.Populate(s)
+	return stock.Provider.Populate(stock, apiKey...)
 }
 
 // Helper function to set the struct field based on its type.

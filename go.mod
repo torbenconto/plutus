@@ -1,6 +1,8 @@
 module github.com/torbenconto/plutus
 
-go 1.20
+go 1.21
+
+toolchain go1.21.1
 
 require github.com/gocolly/colly/v2 v2.1.0
 
@@ -15,6 +17,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
