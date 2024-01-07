@@ -6,8 +6,6 @@ var YFTableMap = map[string]string{
 	"Open":                     "OpenPrice",
 	"Bid":                      "BidPrice",
 	"Ask":                      "AskPrice",
-	"Day's Range":              "DayRange",
-	"52 Week Range":            "FiftyTwoWeekRange",
 	"Volume":                   "Volume",
 	"Avg. Volume":              "AvgVolume",
 	"Market Cap":               "MarketCap",

@@ -3,6 +3,7 @@ package plutus
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -46,6 +47,24 @@ func (p *p_YahooFinanceProvider) Populate(s *Stock, apiKey ...string) (*Stock, e
 			values = append(values, t.Text)
 
 			if len(values) == 2 {
+				if values[0] == "Day's Range" || values[0] == "52 Week Range" {
+					parts := strings.Split(values[1], "-")
+
+					lowHalf := strings.TrimSpace(parts[0])
+					highHalf := strings.TrimSpace(parts[1])
+
+					low, _ := strconv.ParseFloat(lowHalf, 64)
+					high, _ := strconv.ParseFloat(highHalf, 64)
+
+					if values[0] == "52 Week Range" {
+						s.FiftyTwoWeekLow = low
+						s.FiftyTwoWeekHigh = high
+					} else {
+						s.DayLow = low
+						s.DayHigh = high
+					}
+				}
+
 				s.setField(YFTableMap[values[0]], values[1])
 				values = nil
 			}

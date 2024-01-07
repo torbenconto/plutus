@@ -10,28 +10,34 @@ import (
 )
 
 type Stock struct {
-	Ticker                  string
-	Price                   float64
-	ChangePrice             float64
-	ChangePercent           float64
-	PrevClose               float64
-	OpenPrice               float64
-	BidPrice                string
-	AskPrice                string
-	DayRange                string
-	FiftyTwoWeekRange       string
-	Volume                  int
-	AvgVolume               int
-	MarketCap               string
-	Beta                    float64
-	PE                      float64
-	EPS                     float64
-	EarningsDate            string
-	ForwardDividendAndYield string
-	ExDividendDate          string
-	OneYearTargetEst        float64
-	Collector               *colly.Collector
-	Provider                StockDataProvider
+	Ticker                     string
+	Price                      float64
+	ChangePrice                float64
+	ChangePercent              float64
+	PrevClose                  float64
+	OpenPrice                  float64
+	BidPrice                   string
+	AskPrice                   string
+	DayHigh                    float64
+	DayLow                     float64
+	FiftyTwoWeekLow            float64
+	FiftyTwoWeekHigh           float64
+	Volume                     int
+	AvgVolume                  int
+	MarketCap                  string
+	Beta                       float64
+	PE                         float64
+	EPS                        float64
+	FiftyDayMovingAverage      float64
+	TwoHundredDayMovingAverage float64
+	SharesOutstanding          float64
+	EarningsDate               string
+	ForwardDividendAndYield    string
+	DividendDate               string
+	ExDividendDate             string
+	OneYearTargetEst           float64
+	Collector                  *colly.Collector
+	Provider                   StockDataProvider
 }
 
 // NewStock creates a new Stock instance for the given ticker.
