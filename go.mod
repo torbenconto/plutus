@@ -23,5 +23,4 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	github.com/torbenconto/plutus/quote v1.3.0
 )
