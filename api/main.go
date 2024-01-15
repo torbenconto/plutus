@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/torbenconto/plutus"
+	"github.com/torbenconto/plutus/quote"
 	"net/http"
 )
 
@@ -20,7 +20,7 @@ func setupRouter() *gin.Engine {
 		// Get ticker from url param
 		ticker := c.Param("ticker")
 		// Create new quote instance
-		stock, err := plutus.NewStock(ticker)
+		stock, err := quote.NewStock(ticker)
 		// Check for errors, return 404 if not found or 200 along with quote data if found
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
