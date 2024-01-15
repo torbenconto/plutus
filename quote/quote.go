@@ -3,6 +3,7 @@ package quote
 import (
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/internal/table"
 	"github.com/torbenconto/plutus/internal/util"
 	"reflect"
@@ -39,7 +40,7 @@ type Quote struct {
 
 // NewQuote creates a new Quote instance for the given ticker.
 func NewQuote(ticker string) (*Quote, error) {
-	c := colly.NewCollector()
+	c := plutus.DefaultCollector
 
 	quote := &Quote{
 		Ticker:    strings.ToUpper(ticker),
