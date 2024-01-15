@@ -2,23 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/torbenconto/plutus"
+	quote "github.com/torbenconto/plutus/quote"
 )
 
 func main() {
-	// Create a stock object using a ticker and provider, the stock will be auto populated with data when created, no need to call any other methods
+	// Create a quote object using a ticker and provider, the quote will be auto populated with data when created, no need to call any other methods
 	// Returns an error and a plutus.Stock struct, error details what went wrong with fetching data
 	//                  no need to capitalize ticker
 	//                              |
 	//                              v
 	// Yahoo finance provider is recommended as it has the most data and is free to use, Alpha Vantage is also available but does reuqire an API key to be passied in after the provder.
 	// Alpha vantage is much faster than yahoo finance but has less data and no realtime data on the free plan
-	stock, err := plutus.NewStock("amd")
+	stock, err := quote.NewStock("amd")
 	if err != nil {
 		fmt.Printf("An error occured: %e", err)
 	}
 
-	// The resulting stock object has many different fields of data filled in from yahoo finance
+	// The resulting quote object has many different fields of data filled in from yahoo finance
 	fmt.Printf("Ticker: %s\n", stock.Ticker)
 	fmt.Printf("Price: %.2f\n", stock.Price)
 	fmt.Printf("ChangePrice: %.2f\n", stock.ChangePrice)
@@ -46,7 +46,7 @@ func main() {
 	fmt.Printf("ExDividendDate: %s\n", stock.ExDividendDate)
 	fmt.Printf("OneYearTargetEst: %.2f\n", stock.OneYearTargetEst)
 
-	// If you want a constant stream of data on the stock you can use the Stream method on the stock
+	// If you want a constant stream of data on the quote you can use the Stream method on the quote
 	// An example of this method is contained here
 	// https://github.com/torbenconto/plutus/blob/master/examples/Stock_Data_Stream/main.go
 }

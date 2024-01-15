@@ -1,11 +1,13 @@
-package plutus
+package quote
 
 import (
 	"fmt"
+	"github.com/gocolly/colly/v2"
+	"github.com/torbenconto/plutus/internal/table"
+	"github.com/torbenconto/plutus/internal/util"
+	"reflect"
 	"strconv"
 	"strings"
-
-	"github.com/gocolly/colly/v2"
 )
 
 type Stock struct {
@@ -58,17 +60,17 @@ func (s *Stock) Populate() (*Stock, error) {
 	s.Collector.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
 		switch h.Attr("data-field") {
 		case "regularMarketPrice", "preMarketPrice", "postMarketPrice":
-			if isPrimary(h.Attr("active")) {
+			if util.IsPrimary(h.Attr("active")) {
 				s.Price, _ = strconv.ParseFloat(h.Text, 64)
 			}
 		case "regularMarketChange", "preMarketChange", "postMarketChange":
-			if isPrimary(h.Attr("active")) {
+			if util.IsPrimary(h.Attr("active")) {
 				chng, _ := strconv.ParseFloat(h.Text, 64)
 				s.ChangePrice = chng
 			}
 		case "regularMarketChangePercent", "preMarketChangePercent", "postMarketChangePercent":
-			if isPrimary(h.Attr("active")) {
-				percentString := cleanNumber(h.Text)
+			if util.IsPrimary(h.Attr("active")) {
+				percentString := util.CleanNumber(h.Text)
 				percentFloat, _ := strconv.ParseFloat(percentString, 64)
 				s.ChangePercent = percentFloat
 			}
@@ -100,7 +102,7 @@ func (s *Stock) Populate() (*Stock, error) {
 					}
 				}
 
-				s.setField(YFTableMap[values[0]], values[1])
+				s.setField(table.YFTableMap[values[0]], values[1])
 				values = nil
 			}
 		})
@@ -116,4 +118,24 @@ func (s *Stock) Populate() (*Stock, error) {
 	}
 
 	return s, nil
+}
+
+// Helper function to set the struct field based on its type.
+func (s *Stock) setField(fieldName string, value string) {
+	val := reflect.ValueOf(s).Elem()
+	field := val.FieldByName(fieldName)
+
+	value = util.CleanNumber(value)
+
+	switch field.Kind() {
+	case reflect.String:
+		field.SetString(value)
+	case reflect.Float64:
+		fmt.Println(fieldName, value)
+		fieldFloat, _ := strconv.ParseFloat(value, 64)
+		field.SetFloat(fieldFloat)
+	case reflect.Int:
+		fieldInt, _ := strconv.Atoi(value)
+		field.SetInt(int64(fieldInt))
+	}
 }

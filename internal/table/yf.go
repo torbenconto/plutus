@@ -1,6 +1,6 @@
-package plutus
+package table
 
-// Map of table names to corresponding Stock Struct values (yahoo finance)
+// YFTableMap Map of table names to corresponding Stock Struct values (yahoo finance)
 var YFTableMap = map[string]string{
 	"Previous Close":           "PrevClose",
 	"Open":                     "OpenPrice",

@@ -16,12 +16,12 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
-	r.GET("/stock/:ticker", func(c *gin.Context) {
+	r.GET("/quote/:ticker", func(c *gin.Context) {
 		// Get ticker from url param
 		ticker := c.Param("ticker")
-		// Create new stock instance
+		// Create new quote instance
 		stock, err := plutus.NewStock(ticker)
-		// Check for errors, return 404 if not found or 200 along with stock data if found
+		// Check for errors, return 404 if not found or 200 along with quote data if found
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err,
