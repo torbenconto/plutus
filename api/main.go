@@ -17,20 +17,10 @@ func setupRouter() *gin.Engine {
 	})
 
 	r.GET("/stock/:ticker", func(c *gin.Context) {
-		// Variable to set the current provider
-		var activeProvider plutus.StockDataProvider
-
-		// Get provider from url param
-		providerQuery := c.Query("provider")
-		// None specified, use default
-		if providerQuery == "" {
-			activeProvider = plutus.YahooFinanceProvider
-		}
-
 		// Get ticker from url param
 		ticker := c.Param("ticker")
 		// Create new stock instance
-		stock, err := plutus.NewStock(ticker, activeProvider)
+		stock, err := plutus.NewStock(ticker)
 		// Check for errors, return 404 if not found or 200 along with stock data if found
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
