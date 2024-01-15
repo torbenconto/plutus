@@ -13,7 +13,7 @@ func main() {
 	//                              v
 	// Yahoo finance provider is recommended as it has the most data and is free to use, Alpha Vantage is also available but does reuqire an API key to be passied in after the provder.
 	// Alpha vantage is much faster than yahoo finance but has less data and no realtime data on the free plan
-	stock, err := plutus.NewStock("amd", plutus.YahooFinanceProvider)
+	stock, err := plutus.NewStock("amd")
 	if err != nil {
 		fmt.Printf("An error occured: %e", err)
 	}

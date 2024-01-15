@@ -14,7 +14,7 @@ func (s *Stock) Stream(delay int) <-chan *Stock {
 
 		for {
 			// This is very bad i think
-			data, _ := NewStock(s.Ticker, s.Provider)
+			data, _ := NewStock(s.Ticker)
 
 			stream <- data
 

@@ -2,7 +2,6 @@ package plutus
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -37,38 +36,84 @@ type Stock struct {
 	ExDividendDate             string
 	OneYearTargetEst           float64
 	Collector                  *colly.Collector
-	Provider                   StockDataProvider
 }
 
 // NewStock creates a new Stock instance for the given ticker.
-func NewStock(ticker string, provider StockDataProvider, apiKey ...string) (*Stock, error) {
+func NewStock(ticker string) (*Stock, error) {
 	c := colly.NewCollector()
 
 	stock := &Stock{
 		Ticker:    strings.ToUpper(ticker),
 		Collector: c,
-		Provider:  provider,
 	}
 
-	return stock.Provider.Populate(stock, apiKey...)
+	return stock.Populate()
 }
 
-// Helper function to set the struct field based on its type.
-func (s *Stock) setField(fieldName string, value string) {
-	val := reflect.ValueOf(s).Elem()
-	field := val.FieldByName(fieldName)
+func (s *Stock) Populate() (*Stock, error) {
+	var err error
 
-	value = cleanNumber(value)
+	url := fmt.Sprintf("https://finance.yahoo.com/quote/%s", s.Ticker)
 
-	switch field.Kind() {
-	case reflect.String:
-		field.SetString(value)
-	case reflect.Float64:
-		fmt.Println(fieldName, value)
-		fieldFloat, _ := strconv.ParseFloat(value, 64)
-		field.SetFloat(fieldFloat)
-	case reflect.Int:
-		fieldInt, _ := strconv.Atoi(value)
-		field.SetInt(int64(fieldInt))
+	s.Collector.OnHTML("fin-streamer", func(h *colly.HTMLElement) {
+		switch h.Attr("data-field") {
+		case "regularMarketPrice", "preMarketPrice", "postMarketPrice":
+			if isPrimary(h.Attr("active")) {
+				s.Price, _ = strconv.ParseFloat(h.Text, 64)
+			}
+		case "regularMarketChange", "preMarketChange", "postMarketChange":
+			if isPrimary(h.Attr("active")) {
+				chng, _ := strconv.ParseFloat(h.Text, 64)
+				s.ChangePrice = chng
+			}
+		case "regularMarketChangePercent", "preMarketChangePercent", "postMarketChangePercent":
+			if isPrimary(h.Attr("active")) {
+				percentString := cleanNumber(h.Text)
+				percentFloat, _ := strconv.ParseFloat(percentString, 64)
+				s.ChangePercent = percentFloat
+			}
+		}
+	})
+
+	s.Collector.OnHTML("tr", func(h *colly.HTMLElement) {
+		var values []string
+
+		h.ForEach("td", func(i int, t *colly.HTMLElement) {
+			values = append(values, t.Text)
+
+			if len(values) == 2 {
+				if values[0] == "Day's Range" || values[0] == "52 Week Range" {
+					parts := strings.Split(values[1], "-")
+
+					lowHalf := strings.TrimSpace(parts[0])
+					highHalf := strings.TrimSpace(parts[1])
+
+					low, _ := strconv.ParseFloat(lowHalf, 64)
+					high, _ := strconv.ParseFloat(highHalf, 64)
+
+					if values[0] == "52 Week Range" {
+						s.FiftyTwoWeekLow = low
+						s.FiftyTwoWeekHigh = high
+					} else {
+						s.DayLow = low
+						s.DayHigh = high
+					}
+				}
+
+				s.setField(YFTableMap[values[0]], values[1])
+				values = nil
+			}
+		})
+	})
+
+	s.Collector.OnError(func(r *colly.Response, e error) {
+		err = fmt.Errorf("HTTP request error: %v", e)
+	})
+
+	err = s.Collector.Visit(url)
+	if err != nil {
+		return nil, fmt.Errorf("error scraping data: %v", err)
 	}
+
+	return s, nil
 }
