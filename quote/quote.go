@@ -128,7 +128,6 @@ func (q *Quote) setField(fieldName string, value string) {
 	case reflect.String:
 		field.SetString(value)
 	case reflect.Float64:
-		fmt.Println(fieldName, value)
 		fieldFloat, _ := strconv.ParseFloat(value, 64)
 		field.SetFloat(fieldFloat)
 	case reflect.Int:
