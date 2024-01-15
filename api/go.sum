@@ -127,6 +127,8 @@ github.com/temoto/robotstxt v1.1.2 h1:W2pOjSJ6SWvldyEuiFXNxz3xZ8aiWX5LbfDiOFd7Fx
 github.com/temoto/robotstxt v1.1.2/go.mod h1:+1AmkuG3IYkh1kv0d2qEB9Le88ehNO0zwOr3ujewlOo=
 github.com/torbenconto/plutus v1.2.0 h1:MkJ6z6yBuHOy92QjWhSviH2srEqnlLGDSVEnp91rBvg=
 github.com/torbenconto/plutus v1.2.0/go.mod h1:OgLUaL4kkkJekwU3TFyNMKruVeXIawN1JOAydoUCqeQ=
+github.com/torbenconto/plutus v1.3.0 h1:k+hYJ0SeW68ams8orjyK0P73IvzgolIC0n7bITIVGbU=
+github.com/torbenconto/plutus v1.3.0/go.mod h1:e+cT6H8InJvO1edv6C1pj6iOkzUUuXDzUHAZ9+bacek=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.12 h1:9LC83zGrHhuUA9l16C9AHXAqEV/2wBQ4nkvumAE65EE=

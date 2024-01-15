@@ -1,10 +1,12 @@
 module github.com/torbenconto/plutus/api
 
-go 1.20
+go 1.21
+
+toolchain go1.21.1
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/torbenconto/plutus v1.2.0
+	github.com/torbenconto/plutus v1.3.0
 )
 
 require (
