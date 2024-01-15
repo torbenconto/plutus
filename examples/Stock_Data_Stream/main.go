@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// Create new Stock object
-	stock, err := quote.NewStock("AMD")
+	stock, err := quote.NewQuote("AMD")
 	if err != nil {
 		fmt.Println("Error fetching data for quote")
 	}

@@ -20,7 +20,7 @@ func setupRouter() *gin.Engine {
 		// Get ticker from url param
 		ticker := c.Param("ticker")
 		// Create new quote instance
-		stock, err := quote.NewStock(ticker)
+		stock, err := quote.NewQuote(ticker)
 		// Check for errors, return 404 if not found or 200 along with quote data if found
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{

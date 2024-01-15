@@ -6,14 +6,12 @@ import (
 )
 
 func main() {
-	// Create a quote object using a ticker and provider, the quote will be auto populated with data when created, no need to call any other methods
+	// Create a quote object using a ticker, the quote will be auto populated with data when created, no need to call any other methods
 	// Returns an error and a plutus.Stock struct, error details what went wrong with fetching data
 	//                  no need to capitalize ticker
 	//                              |
 	//                              v
-	// Yahoo finance provider is recommended as it has the most data and is free to use, Alpha Vantage is also available but does reuqire an API key to be passied in after the provder.
-	// Alpha vantage is much faster than yahoo finance but has less data and no realtime data on the free plan
-	stock, err := quote.NewStock("amd")
+	stock, err := quote.NewQuote("amd")
 	if err != nil {
 		fmt.Printf("An error occured: %e", err)
 	}
@@ -37,9 +35,6 @@ func main() {
 	fmt.Printf("Beta: %.2f\n", stock.Beta)
 	fmt.Printf("PE: %.2f\n", stock.PE)
 	fmt.Printf("EPS: %.2f\n", stock.EPS)
-	fmt.Printf("FiftyDayMovingAverage: %.2f\n", stock.FiftyDayMovingAverage)
-	fmt.Printf("TwoHundredDayMovingAverage: %.2f\n", stock.TwoHundredDayMovingAverage)
-	fmt.Printf("SharesOutstanding: %.2f\n", stock.SharesOutstanding)
 	fmt.Printf("EarningsDate: %s\n", stock.EarningsDate)
 	fmt.Printf("ForwardDividendAndYield: %s\n", stock.ForwardDividendAndYield)
 	fmt.Printf("DividendDate: %s\n", stock.DividendDate)
