@@ -1,11 +1,11 @@
-package quote
+package historical
 
 import "time"
 
 // Stream Return a constant stream of updated data from the quote using goroutines
 // - https://github.com/torbenconto/plutus/blob/master/examples/Stock_Data_Stream/main.go (example on how to use)
-func (q *Quote) Stream(delay int) <-chan *Quote {
-	stream := make(chan *Quote)
+func (h *Historical) Stream(delay int) <-chan *Historical {
+	stream := make(chan *Historical)
 
 	delayT := time.Duration(delay) * time.Millisecond
 
@@ -13,8 +13,7 @@ func (q *Quote) Stream(delay int) <-chan *Quote {
 		defer close(stream)
 
 		for {
-			// This is very bad i think
-			data, _ := q.Populate()
+			data, _ := h.Populate()
 
 			stream <- data
 
