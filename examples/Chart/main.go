@@ -15,14 +15,12 @@ func main() {
 
 	data := stock.Data
 
-	fmt.Println(data)
-
 	// Extract x and y values from TimePricePair
 	var xs []float64
 	var ys []float64
 	for _, pair := range data {
 		xs = append(xs, float64(pair.Time))
-		ys = append(ys, pair.Price)
+		ys = append(ys, pair.Close)
 	}
 
 	// Create a new plot
