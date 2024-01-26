@@ -13,7 +13,6 @@ func (q *Quote) Stream(delay int) <-chan *Quote {
 		defer close(stream)
 
 		for {
-			// This is very bad i think
 			data, _ := q.Populate()
 
 			stream <- data
