@@ -51,6 +51,24 @@ for {
 }
 ```
 
+#### Historical Data
+```go
+import "github.com/torbenconto/plutus/historical"
+import _range "github.com/torbenconto/plutus/range
+import "github.com/torbenconto/plutus/interval"
+// Create a new historical data object using the ticker of the stock you want data on as well as the range and interval of the data.
+stock, err := historical.NewHistorical("AMD", _range.FiveDay, interval.OneMin)
+if err != nil {
+    fmt.Printf("An error occured: %e", err)
+}
+
+// Returns a list of all the data points as structs containing the time in unix time and the price of the stock at that time.
+for _, data := range stock.Data {
+    fmt.Println(data.Time, data.Price)
+}
+```
+
+
 
 # REST api
 ## The repo containing the api and information about it is contained here [plutus-api](https://github.com/torbenconto/plutus-api)
