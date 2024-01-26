@@ -21,7 +21,7 @@ func main() {
 	// Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
 	for {
 		data := <-stream
-		fmt.Println(data.Price, data.ChangePercent)
+		fmt.Println(data.RegularMarketPrice, data.RegularMarketChangePercent)
 	}
 
 }

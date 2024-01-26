@@ -136,15 +136,11 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
-	fmt.Println(string(body))
-
 	var quoteResponseData QuoteResponse
 	err = json.Unmarshal(body, &quoteResponseData)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)
 	}
-
-	fmt.Println(quoteResponseData)
 
 	return &quoteResponseData.QuoteResponse.Result[0], nil
 }
