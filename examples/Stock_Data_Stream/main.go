@@ -12,7 +12,7 @@ func main() {
 		fmt.Println("Error fetching data for quote")
 	}
 
-	// Set delay in Milliseconds
+	// Set delay in Milliseconds (1000 = 1 second)
 	delayInMS := 1000
 
 	// Call stream func using Stock object and a given delay
