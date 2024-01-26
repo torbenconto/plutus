@@ -27,3 +27,37 @@ const (
 	// Max Range for all historical data
 	Max Range = "max"
 )
+
+func (r Range) String() string {
+	return string(r)
+}
+
+// RangeFromString Return a Range from a string (default: Max)
+func RangeFromString(_range string) Range {
+	switch _range {
+	case "1d":
+		return OneDay
+	case "5d":
+		return FiveDay
+	case "1mo":
+		return OneMonth
+	case "3mo":
+		return ThreeMonth
+	case "6mo":
+		return SixMonth
+	case "1y":
+		return OneYear
+	case "2y":
+		return TwoYear
+	case "5y":
+		return FiveYear
+	case "10y":
+		return TenYear
+	case "ytd":
+		return YearToDate
+	case "max":
+		return Max
+	default:
+		return Max
+	}
+}
