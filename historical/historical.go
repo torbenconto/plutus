@@ -21,18 +21,16 @@ type Historical struct {
 type Response struct {
 	Chart struct {
 		Result []struct {
-			Response []struct {
-				Indicators struct {
-					Quote []struct {
-						Close  []float64 `json:"close"`
-						Open   []float64 `json:"open"`
-						Volume []int64   `json:"volume"`
-						High   []float64 `json:"high"`
-						Low    []float64 `json:"low"`
-					} `json:"quote"`
-				} `json:"indicators"`
-				Timestamp []int64 `json:"timestamp"`
-			} `json:"response"`
+			Indicators struct {
+				Quote []struct {
+					Close  []float64 `json:"close"`
+					Open   []float64 `json:"open"`
+					Volume []int64   `json:"volume"`
+					High   []float64 `json:"high"`
+					Low    []float64 `json:"low"`
+				} `json:"quote"`
+			} `json:"indicators"`
+			Timestamp []int64 `json:"timestamp"`
 		} `json:"result"`
 	} `json:"chart"`
 }
@@ -60,7 +58,7 @@ func (h *Historical) Populate() (*Historical, error) {
 	var err error
 
 	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://query1.finance.yahoo.com/v8/finance/chart/%s?region=US&lang=en-US&includePrePost=false&range=%s&interval=%s&useYfid=true&corsDomain=finance.yahoo.com&.tsrc=finance", h.Ticker, h.Range, h.Interval), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://query1.finance.yahoo.com/v8/finance/chart/%s?region=US&lang=en-US&includePrePost=false&range=%s&interval=%s&useYfid=true&corsDomain=finance.yahoo.com&.tsrc=finance&indicators=quote", h.Ticker, h.Range, h.Interval), nil)
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)
@@ -82,12 +80,12 @@ func (h *Historical) Populate() (*Historical, error) {
 		fmt.Println("Error:", err)
 	}
 
-	closeList := chartResponse.Chart.Result[0].Response[0].Indicators.Quote[0].Close
-	openList := chartResponse.Chart.Result[0].Response[0].Indicators.Quote[0].Open
-	volumeList := chartResponse.Chart.Result[0].Response[0].Indicators.Quote[0].Volume
-	highList := chartResponse.Chart.Result[0].Response[0].Indicators.Quote[0].High
-	lowList := chartResponse.Chart.Result[0].Response[0].Indicators.Quote[0].Low
-	timeList := chartResponse.Chart.Result[0].Response[0].Timestamp
+	closeList := chartResponse.Chart.Result[0].Indicators.Quote[0].Close
+	openList := chartResponse.Chart.Result[0].Indicators.Quote[0].Open
+	volumeList := chartResponse.Chart.Result[0].Indicators.Quote[0].Volume
+	highList := chartResponse.Chart.Result[0].Indicators.Quote[0].High
+	lowList := chartResponse.Chart.Result[0].Indicators.Quote[0].Low
+	timeList := chartResponse.Chart.Result[0].Timestamp
 
 	tuples := make([]PricePoint, 0)
 
