@@ -64,7 +64,7 @@ if err != nil {
 
 // Returns a list of all the data points as structs containing the time in unix time and the price of the stock at that time.
 for _, data := range stock.Data {
-    fmt.Println(data.Time, data.Price)
+    fmt.Println(data.Time, data.Open, data.Close, data.High, data.Low, data.Volume)
 }
 ```
 
