@@ -77,12 +77,10 @@ func (h *Historical) Populate() (*Historical, error) {
 	priceList := sparkResponse.Spark.Result[0].Response[0].Indicators.Quote[0].Close
 	timeList := sparkResponse.Spark.Result[0].Response[0].Timestamp
 
-	tuples := make([]TimePricePair, len(priceList))
+	tuples := make([]TimePricePair, 0)
 
-	for _, i := range priceList {
-		for _, t := range timeList {
-			tuples = append(tuples, TimePricePair{Time: t, Price: i})
-		}
+	for index, price := range priceList {
+		tuples = append(tuples, TimePricePair{Time: timeList[index], Price: price})
 	}
 
 	h.Data = tuples
