@@ -18,7 +18,7 @@ if err != nil {
 ```
 Done!, now you can access many different aspects of the stock including price, volume, market cap, and many others!
 ```go
-    fmt.Println(stock.Price)
+    fmt.Println(stock.RegularMarketPrice)
 ```
 
 ### Usage
@@ -47,7 +47,7 @@ stream := stock.Stream(delayInMS)
 // Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
 for {
     data := <-stream
-    fmt.Println(data.Price, data.ChangePercent)
+    fmt.Println(data.RegularMarketPrice, data.RegularMarketChangePercent)
 }
 ```
 
@@ -80,9 +80,10 @@ Please use the provided examples to guide you to using plutus to it's full poten
 
 
 # Future Features
-- [-] Related News Articles
-- [-] Historical Data
-- [-] Price Estimates
+- [ ] Related News Articles
+- [x] Historical Data
+- [x] Price Estimates
+- [ ] Crypto Currency Support
 
 
 And More..
