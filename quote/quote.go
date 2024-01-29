@@ -7,15 +7,13 @@ import (
 	"github.com/torbenconto/plutus/internal/util"
 	"io"
 	"net/http"
-	"reflect"
-	"strconv"
 	"strings"
 )
 
 type QuoteResponse struct {
 	QuoteResponse struct {
-		Result []Quote     `json:"result"`
-		Error  interface{} `json:"error"`
+		Result []Quote           `json:"result"`
+		Error  map[string]string `json:"error"`
 	} `json:"quoteResponse"`
 }
 
@@ -142,24 +140,15 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)
 	}
 
-	return &quoteResponseData.QuoteResponse.Result[0], nil
-}
-
-// Helper function to set the struct field based on its type.
-func (q *Quote) setField(fieldName string, value string) {
-	val := reflect.ValueOf(q).Elem()
-	field := val.FieldByName(fieldName)
-
-	value = util.CleanNumber(value)
-
-	switch field.Kind() {
-	case reflect.String:
-		field.SetString(value)
-	case reflect.Float64:
-		fieldFloat, _ := strconv.ParseFloat(value, 64)
-		field.SetFloat(fieldFloat)
-	case reflect.Int:
-		fieldInt, _ := strconv.Atoi(value)
-		field.SetInt(int64(fieldInt))
+	// Check if the Error field is not nil
+	if quoteResponseData.QuoteResponse.Error != nil {
+		return nil, fmt.Errorf("error returned from API: %s, %s", quoteResponseData.QuoteResponse.Error["code"], quoteResponseData.QuoteResponse.Error["description"])
 	}
+
+	// Check if the Result field is empty
+	if len(quoteResponseData.QuoteResponse.Result) == 0 {
+		return nil, fmt.Errorf("error returned from API: no result returned")
+	}
+
+	return &quoteResponseData.QuoteResponse.Result[0], nil
 }

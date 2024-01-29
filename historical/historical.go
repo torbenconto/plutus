@@ -32,6 +32,7 @@ type Response struct {
 			} `json:"indicators"`
 			Timestamp []int64 `json:"timestamp"`
 		} `json:"result"`
+		Error map[string]string `json:"error"`
 	} `json:"chart"`
 }
 
@@ -58,7 +59,7 @@ func (h *Historical) Populate() (*Historical, error) {
 	var err error
 
 	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Interval.String(), h.Range.String()), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)
@@ -78,6 +79,17 @@ func (h *Historical) Populate() (*Historical, error) {
 	var chartResponse Response
 	if err := json.Unmarshal(body, &chartResponse); err != nil {
 		fmt.Println("Error:", err)
+	}
+
+	// Check if the Error field is not nil
+	if chartResponse.Chart.Error != nil {
+		return nil, fmt.Errorf("error returned from API: %s, %s", chartResponse.Chart.Error["code"], chartResponse.Chart.Error["description"])
+	}
+
+	// Check if the Result field is empty
+	if len(chartResponse.Chart.Result) == 0 {
+
+		return nil, fmt.Errorf("error returned from API: no result returned")
 	}
 
 	closeList := chartResponse.Chart.Result[0].Indicators.Quote[0].Close

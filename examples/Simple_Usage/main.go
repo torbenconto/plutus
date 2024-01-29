@@ -13,7 +13,7 @@ func main() {
 	//                              v
 	stock, err := quote.NewQuote("amd")
 	if err != nil {
-		fmt.Printf("An error occured: %e", err)
+		fmt.Printf("An error occured: %s\n", err)
 	}
 
 	// Print all values defined in the Quote struct
