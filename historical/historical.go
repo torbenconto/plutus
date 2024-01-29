@@ -58,7 +58,7 @@ func (h *Historical) Populate() (*Historical, error) {
 	var err error
 
 	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://query1.finance.yahoo.com/v8/finance/chart/%s?region=US&lang=en-US&includePrePost=false&range=%s&interval=%s&useYfid=true&corsDomain=finance.yahoo.com&.tsrc=finance&indicators=quote", h.Ticker, h.Range, h.Interval), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Interval.String(), h.Range.String()), nil)
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)

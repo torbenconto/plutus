@@ -8,18 +8,19 @@ import (
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"log"
+	"time"
 )
 
 func main() {
-	stock, _ := historical.NewHistorical("AMD", _range.OneDay, interval.OneHour)
+	stock, _ := historical.NewHistorical("AMD", _range.OneDay, interval.OneMinute)
 
 	data := stock.Data
 
 	// Extract x and y values from TimePricePair
-	var xs []float64
+	var xs []time.Time
 	var ys []float64
 	for _, pair := range data {
-		xs = append(xs, float64(pair.Time))
+		xs = append(xs, time.Unix(pair.Time, 0))
 		ys = append(ys, pair.Close)
 	}
 
@@ -29,7 +30,7 @@ func main() {
 	// Create a new scatter plotter
 	pts := make(plotter.XYs, len(xs))
 	for i := range pts {
-		pts[i].X = xs[i]
+		pts[i].X = float64(xs[i].Unix())
 		pts[i].Y = ys[i]
 	}
 
@@ -39,12 +40,15 @@ func main() {
 	p.Add(s)
 
 	// Set plot title and axis labels
-	p.Title.Text = "Price over Time"
+	p.Title.Text = "AMD"
 	p.X.Label.Text = "Time"
 	p.Y.Label.Text = "Price"
 
+	// Format the x-axis ticks to display date and time
+	p.X.Tick.Marker = plot.TimeTicks{Format: "2006-01-02\n15:04:05"}
+
 	// Save the plot to a file
-	if err := p.Save(800, 400, "price_over_time.png"); err != nil {
+	if err := p.Save(800, 600, "price_over_time.png"); err != nil {
 		log.Fatal(err)
 	}
 

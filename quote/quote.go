@@ -119,7 +119,7 @@ func (q *Quote) Populate() (*Quote, error) {
 	}
 
 	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://query2.finance.yahoo.com/v7/finance/quote?formatted=false&crumb=%s&lang=en-US&region=US&symbols=%s&corsDomain=finance.yahoo.com", crumb, q.Ticker), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(URL, crumb, q.Ticker), nil)
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)
