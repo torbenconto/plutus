@@ -92,12 +92,13 @@ func (h *Historical) Populate() (*Historical, error) {
 		return nil, fmt.Errorf("error returned from API: no result returned")
 	}
 
-	closeList := chartResponse.Chart.Result[0].Indicators.Quote[0].Close
-	openList := chartResponse.Chart.Result[0].Indicators.Quote[0].Open
-	volumeList := chartResponse.Chart.Result[0].Indicators.Quote[0].Volume
-	highList := chartResponse.Chart.Result[0].Indicators.Quote[0].High
-	lowList := chartResponse.Chart.Result[0].Indicators.Quote[0].Low
+	quote := chartResponse.Chart.Result[0].Indicators.Quote[0]
 	timeList := chartResponse.Chart.Result[0].Timestamp
+	closeList := quote.Close
+	openList := quote.Open
+	volumeList := quote.Volume
+	highList := quote.High
+	lowList := quote.Low
 
 	tuples := make([]PricePoint, 0)
 
