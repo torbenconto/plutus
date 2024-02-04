@@ -8,6 +8,7 @@ import (
 	"github.com/torbenconto/plutus/range"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type Historical struct {
@@ -56,10 +57,14 @@ func NewHistorical(ticker string, dateRange _range.Range, interval interval.Inte
 }
 
 func (h *Historical) Populate() (*Historical, error) {
+	var req *http.Request
 	var err error
 
-	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
+	if strings.Count(URL, "%s") == 3 {
+		req, err = http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
+	} else {
+		req, err = http.NewRequest("GET", URL, nil)
+	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)
@@ -69,7 +74,12 @@ func (h *Historical) Populate() (*Historical, error) {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
-	defer get.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}(get.Body)
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {

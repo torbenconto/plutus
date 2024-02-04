@@ -108,16 +108,20 @@ func NewQuote(ticker string) (*Quote, error) {
 }
 
 func (q *Quote) Populate() (*Quote, error) {
+	var req *http.Request
 	var err error
 
-	// Get crumb
-	crumb, err := util.GetCrumb()
-	if err != nil {
-		return nil, fmt.Errorf("error getting crumb: %v", err)
-	}
-
 	// Get quote
-	req, err := http.NewRequest("GET", fmt.Sprintf(URL, crumb, q.Ticker), nil)
+	if strings.Count(URL, "%s") < 2 {
+		req, err = http.NewRequest("GET", URL, nil)
+	} else {
+		// Get crumb
+		crumb, err := util.GetCrumb()
+		if err != nil {
+			return nil, fmt.Errorf("error getting crumb: %v", err)
+		}
+		req, err = http.NewRequest("GET", fmt.Sprintf(URL, crumb, q.Ticker), nil)
+	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
 	req.Header.Set("Cookie", plutus.Cookie)
@@ -127,7 +131,12 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
-	defer get.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}(get.Body)
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {
