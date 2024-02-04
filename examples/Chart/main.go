@@ -12,9 +12,12 @@ import (
 )
 
 func main() {
-	stock, _ := historical.NewHistorical("AMD", _range.OneDay, interval.OneMinute)
+	stock, _ := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
 
 	data := stock.Data
+
+	// Remove 2nd to last element from data
+	//data = append(data[:len(data)-2], data[len(data)-1:]...)
 
 	// Extract x and y values from TimePricePair
 	var xs []time.Time
