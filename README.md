@@ -100,9 +100,6 @@ for {
 }
 ```
 
-
-
-
 # REST api
 ## The repo containing the api and information about it is contained here [plutus-api](https://github.com/torbenconto/plutus-api)
 

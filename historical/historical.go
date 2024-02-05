@@ -54,6 +54,7 @@ func NewHistorical(ticker string, dateRange _range.Range, interval interval.Inte
 		Interval: interval,
 	}
 
+	// apiUrl is mainly used for testing purposes, additional functionality will be added in the future
 	if len(apiUrl) > 0 {
 		historical.URL = apiUrl[0]
 	} else {
