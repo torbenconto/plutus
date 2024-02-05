@@ -1,6 +1,9 @@
 package quote
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Stream Return a constant stream of updated data from the quote using goroutines
 // - https://github.com/torbenconto/plutus/blob/master/examples/Stock_Data_Stream/main.go (example on how to use)
@@ -13,7 +16,10 @@ func (q *Quote) Stream(delay time.Duration) <-chan *Quote {
 		defer close(stream)
 
 		for {
-			data, _ := q.Populate()
+			data, err := q.Populate()
+			if err != nil {
+				fmt.Println("Error fetching data for quote: ", err)
+			}
 
 			stream <- data
 

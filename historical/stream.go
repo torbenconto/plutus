@@ -1,6 +1,9 @@
 package historical
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Stream Return a constant stream of updated data from the historical data using goroutines
 // - https://github.com/torbenconto/plutus/blob/master/examples/Stock_Data_Stream/main.go (example on how to use)
@@ -13,7 +16,10 @@ func (h *Historical) Stream(delay time.Duration) <-chan *Historical {
 		defer close(stream)
 
 		for {
-			data, _ := h.Populate()
+			data, err := h.Populate()
+			if err != nil {
+				fmt.Println("Error fetching data for historical: ", err)
+			}
 
 			stream <- data
 

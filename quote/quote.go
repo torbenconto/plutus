@@ -96,12 +96,19 @@ type Quote struct {
 	CryptoTradeable                   bool    `json:"cryptoTradeable"`
 	DisplayName                       string  `json:"displayName"`
 	Ticker                            string  `json:"symbol"`
+	URL                               string
 }
 
-// NewQuote creates a new Quote instance for the given ticker.
-func NewQuote(ticker string) (*Quote, error) {
+// NewQuote creates a new Quote instance for the given ticker. API url is optional
+func NewQuote(ticker string, apiUrl ...string) (*Quote, error) {
 	quote := &Quote{
 		Ticker: strings.ToUpper(ticker),
+	}
+
+	if len(apiUrl) > 0 {
+		quote.URL = apiUrl[0]
+	} else {
+		quote.URL = url
 	}
 
 	return quote.Populate()
@@ -112,15 +119,15 @@ func (q *Quote) Populate() (*Quote, error) {
 	var err error
 
 	// Get quote
-	if strings.Count(URL, "%s") < 2 {
-		req, err = http.NewRequest("GET", URL, nil)
+	if strings.Count(q.URL, "%s") < 2 {
+		req, err = http.NewRequest("GET", q.URL, nil)
 	} else {
 		// Get crumb
 		crumb, err := util.GetCrumb()
 		if err != nil {
 			return nil, fmt.Errorf("error getting crumb: %v", err)
 		}
-		req, err = http.NewRequest("GET", fmt.Sprintf(URL, crumb, q.Ticker), nil)
+		req, err = http.NewRequest("GET", fmt.Sprintf(q.URL, crumb, q.Ticker), nil)
 	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
@@ -158,6 +165,9 @@ func (q *Quote) Populate() (*Quote, error) {
 	if len(quoteResponseData.QuoteResponse.Result) == 0 {
 		return nil, fmt.Errorf("error returned from API: no result returned")
 	}
+
+	// Url for complete struct data, necessary for Stream method
+	quoteResponseData.QuoteResponse.Result[0].URL = q.URL
 
 	return &quoteResponseData.QuoteResponse.Result[0], nil
 }

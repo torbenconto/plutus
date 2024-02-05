@@ -17,6 +17,7 @@ type Historical struct {
 	Interval interval.Interval
 	// Set of structs containing time and price data paired together
 	Data []PricePoint
+	URL  string
 }
 
 type response struct {
@@ -46,11 +47,17 @@ type PricePoint struct {
 	Volume int64
 }
 
-func NewHistorical(ticker string, dateRange _range.Range, interval interval.Interval) (*Historical, error) {
+func NewHistorical(ticker string, dateRange _range.Range, interval interval.Interval, apiUrl ...string) (*Historical, error) {
 	historical := &Historical{
 		Ticker:   ticker,
 		Range:    dateRange,
 		Interval: interval,
+	}
+
+	if len(apiUrl) > 0 {
+		historical.URL = apiUrl[0]
+	} else {
+		historical.URL = url
 	}
 
 	return historical.Populate()
@@ -60,10 +67,10 @@ func (h *Historical) Populate() (*Historical, error) {
 	var req *http.Request
 	var err error
 
-	if strings.Count(URL, "%s") == 3 {
-		req, err = http.NewRequest("GET", fmt.Sprintf(URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
+	if strings.Count(h.URL, "%s") == 3 {
+		req, err = http.NewRequest("GET", fmt.Sprintf(h.URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
 	} else {
-		req, err = http.NewRequest("GET", URL, nil)
+		req, err = http.NewRequest("GET", h.URL, nil)
 	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)

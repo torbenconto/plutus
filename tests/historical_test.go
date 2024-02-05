@@ -78,9 +78,7 @@ func TestHistoricalPopulate(t *testing.T) {
 	}))
 	defer server.Close()
 
-	historical.URL = server.URL
-
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, server.URL)
 	if err != nil {
 		t.Error("Error fetching data for historical", err)
 	}
@@ -112,6 +110,17 @@ func TestHistoricalPopulate(t *testing.T) {
 
 }
 
+func TestYahooHistoricalApi(t *testing.T) {
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
+	if err != nil {
+		t.Error("Error fetching data for historical", err)
+	}
+
+	if len(data.Data) == 0 {
+		t.Error("Data is empty")
+	}
+}
+
 func TestHistoricalStream(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write(historicalServerData)
@@ -121,9 +130,7 @@ func TestHistoricalStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	historical.URL = server.URL
-
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, server.URL)
 	if err != nil {
 		t.Error("Error fetching data for historical", err)
 	}

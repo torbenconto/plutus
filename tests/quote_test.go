@@ -121,9 +121,7 @@ func TestQuote(t *testing.T) {
 	}))
 	defer server.Close()
 
-	quote.URL = server.URL
-
-	stock, err := quote.NewQuote("GOOG")
+	stock, err := quote.NewQuote("GOOG", server.URL)
 	if err != nil {
 		t.Error("Error fetching data for quote", err)
 	}
@@ -132,6 +130,17 @@ func TestQuote(t *testing.T) {
 		if fieldValue := getField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
+	}
+}
+
+func TestYahooQuoteApi(t *testing.T) {
+	stock, err := quote.NewQuote("GOOG")
+	if err != nil {
+		t.Error("Error fetching data for quote", err)
+	}
+
+	if stock == nil {
+		t.Error("Stock is nil")
 	}
 }
 
@@ -144,9 +153,7 @@ func TestQuoteStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	quote.URL = server.URL
-
-	stock, err := quote.NewQuote("GOOG")
+	stock, err := quote.NewQuote("GOOG", server.URL)
 	if err != nil {
 		t.Error("Error fetching data for quote", err)
 	}

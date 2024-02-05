@@ -21,7 +21,12 @@ func GetCrumb() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error sending request: %v", err)
 	}
-	defer get.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}(get.Body)
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {
