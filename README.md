@@ -1,5 +1,8 @@
 ![logo](./assets/logo.webp)
 ## Plutus
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e85aff53f0584ddcb2bca495f8a66969)](https://app.codacy.com/gh/torbenconto/plutus?utm_source=github.com&utm_medium=referral&utm_content=torbenconto/plutus&utm_campaign=Badge_Grade)
+
 *A stock data centered golang library*
 
 ### Quick Start
