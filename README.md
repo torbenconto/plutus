@@ -2,6 +2,14 @@
 ## Plutus
 *A stock data centered golang library*
 
+![](https://img.shields.io/github/go-mod/go-version/torbenconto/plutus)
+![GitHub Release](https://img.shields.io/github/v/release/torbenconto/plutus)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/torbenconto/plutus)
+[![CodeFactor](https://www.codefactor.io/repository/github/torbenconto/plutus/badge)](https://www.codefactor.io/repository/github/torbenconto/plutus)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/21f74246fdbc49348075a4dbc156abf3)](https://app.codacy.com/gh/torbenconto/plutus/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![GitHub License](https://img.shields.io/github/license/torbenconto/plutus)
+![Lines of code](https://img.shields.io/tokei/lines/github/torbenconto/plutus)![GitHub repo size](https://img.shields.io/github/repo-size/torbenconto/plutus)
+
 ### Quick Start
 Download the library into your existing golang project
 ```sh
