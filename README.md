@@ -47,10 +47,10 @@ if err != nil {
     fmt.Printf("An error occured: %e", err)
 }
 // Set delay in Milliseconds
-delayInMS := 1000
+delay := time.Second
 
 // Call stream func using Stock object and a given delay
-stream := stock.Stream(delayInMS)
+stream := stock.Stream(delay)
 
 // Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
 for {
@@ -75,6 +75,31 @@ for _, data := range stock.Data {
     fmt.Println(data.Time, data.Open, data.Close, data.High, data.Low, data.Volume)
 }
 ```
+
+#### Historical Data Stream
+```go
+import "github.com/torbenconto/plutus/historical"
+import _range "github.com/torbenconto/plutus/range
+import "github.com/torbenconto/plutus/interval"
+// Create a new historical data object using the ticker of the stock you want data on as well as the range and interval of the data.
+stock, err := historical.NewHistorical("AMD", _range.FiveDay, interval.OneMin)
+if err != nil {
+    fmt.Printf("An error occured: %e", err)
+}
+
+// Set delay in Milliseconds
+delay := time.Second
+
+// Call stream func using Stock object and a given delay
+stream := stock.Stream(delay)
+
+// Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
+for {
+    data := <-stream
+    fmt.Println(data.RegularMarketPrice, data.RegularMarketChangePercent)
+}
+```
+
 
 
 
