@@ -38,6 +38,10 @@ func (r *RSI) Calculate() (float64, error) {
 	averageGain := gain.Div(decimal.NewFromFloat(float64(r.Period)))
 	averageLoss := loss.Div(decimal.NewFromFloat(float64(r.Period)))
 
+	if averageLoss.IsZero() {
+		return 100, nil
+	}
+
 	rs := averageGain.Div(averageLoss)
 	rsAsFloat, _ := rs.Float64()
 	rsi := 100 - (100 / (1 + rsAsFloat))
