@@ -9,45 +9,50 @@ import (
 	"testing"
 )
 
-var historicalServerData = []byte(`{
-	"chart": {
-		"result": [
-		    {
-			"indicators": {
-				"quote": [
-					"close": [
-						12.0,
-						14.6,
-						13.2,
-					],
-					"open": [
-						16.0,
-						7.4,
-						9.62,
-					],
-					"volume": [
-						212010,
-						43021,
-						350511,
-					],
-					"high": [
-						13.6,
-						15.2,
-						7.2,
-					],
-					"low": [
-						10.0,
-						12.2,
-						2.31
-					],
-				]		
-			},
-			"timestamp": [
-				1615891200,
-				1615977600,
-				1616064000,
-			]
-	}
+var historicalServerData = []byte(`
+	{
+  "chart": {
+    "result": [
+      {
+        "indicators": {
+          "quote": [
+            {
+              "close": [
+                12.0,
+                14.6,
+                13.2
+              ],
+              "open": [
+                16.0,
+                7.4,
+                9.62
+              ],
+              "volume": [
+                212010,
+                43021,
+                350511
+              ],
+              "high": [
+                13.6,
+                15.2,
+                7.2
+              ],
+              "low": [
+                10.0,
+                12.2,
+                2.31
+              ]
+            }
+          ]
+        },
+        "timestamp": [
+          1615891200,
+          1615977600,
+          1616064000
+        ]
+      }
+    ]
+  }
 }`)
 
 var historicalTestCases = []struct {
