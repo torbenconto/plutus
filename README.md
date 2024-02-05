@@ -86,6 +86,11 @@ for _, data := range stock.Data {
 Please use the provided examples to guide you to using plutus to it's full potential.
 #### https://github.com/torbenconto/plutus/blob/master/examples
 
+### Tests
+To run the tests for the library, simply run the following command in the root of the project.
+```sh
+    go test ./tests
+```
 
 # Future Features
 - [ ] Related News Articles
