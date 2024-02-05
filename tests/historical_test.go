@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 var historicalServerData = []byte(`
@@ -109,4 +110,47 @@ func TestHistoricalPopulate(t *testing.T) {
 		}
 	}
 
+}
+
+func TestHistoricalStream(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write(historicalServerData)
+		if err != nil {
+			t.Error("Error writing response")
+		}
+	}))
+	defer server.Close()
+
+	historical.URL = server.URL
+
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
+	if err != nil {
+		t.Error("Error fetching data for historical", err)
+	}
+
+	delay := time.Second * 1
+	stream := data.Stream(delay)
+
+	receivedData := <-stream
+
+	for i, tc := range historicalTestCases {
+		if receivedData.Data[i].Time != tc.Time {
+			t.Errorf("Expected time to be %d, got %d", tc.Time, receivedData.Data[i].Time)
+		}
+		if receivedData.Data[i].Open != tc.Open {
+			t.Errorf("Expected open to be %f, got %f", tc.Open, receivedData.Data[i].Open)
+		}
+		if receivedData.Data[i].Close != tc.Close {
+			t.Errorf("Expected close to be %f, got %f", tc.Close, receivedData.Data[i].Close)
+		}
+		if receivedData.Data[i].High != tc.High {
+			t.Errorf("Expected high to be %f, got %f", tc.High, receivedData.Data[i].High)
+		}
+		if receivedData.Data[i].Low != tc.Low {
+			t.Errorf("Expected low to be %f, got %f", tc.Low, receivedData.Data[i].Low)
+		}
+		if receivedData.Data[i].Volume != tc.Volume {
+			t.Errorf("Expected volume to be %d, got %d", tc.Volume, receivedData.Data[i].Volume)
+		}
+	}
 }

@@ -135,7 +135,7 @@ func TestQuote(t *testing.T) {
 	}
 }
 
-func TestStream(t *testing.T) {
+func TestQuoteStream(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write(quoteServerData)
 		if err != nil {
