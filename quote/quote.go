@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type QuoteResponse struct {
+type response struct {
 	QuoteResponse struct {
 		Result []Quote           `json:"result"`
 		Error  map[string]string `json:"error"`
@@ -143,7 +143,7 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
-	var quoteResponseData QuoteResponse
+	var quoteResponseData response
 	err = json.Unmarshal(body, &quoteResponseData)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)

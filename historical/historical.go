@@ -19,7 +19,7 @@ type Historical struct {
 	Data []PricePoint
 }
 
-type Response struct {
+type response struct {
 	Chart struct {
 		Result []struct {
 			Indicators struct {
@@ -86,7 +86,7 @@ func (h *Historical) Populate() (*Historical, error) {
 		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
-	var chartResponse Response
+	var chartResponse response
 	if err := json.Unmarshal(body, &chartResponse); err != nil {
 		fmt.Println("Error:", err)
 	}

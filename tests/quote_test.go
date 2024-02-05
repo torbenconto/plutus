@@ -10,7 +10,7 @@ import (
 	"github.com/torbenconto/plutus/quote"
 )
 
-var serverData = []byte(`{
+var quoteServerData = []byte(`{
    "quoteResponse": {
      "result": [{
        "symbol": "GOOG",
@@ -62,7 +62,7 @@ var serverData = []byte(`{
    }
  }`)
 
-var testCases = []struct {
+var quoteTestCases = []struct {
 	field string
 	value interface{}
 }{
@@ -114,7 +114,7 @@ var testCases = []struct {
 
 func TestQuote(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write(serverData)
+		_, err := w.Write(quoteServerData)
 		if err != nil {
 			t.Error("Error writing response")
 		}
@@ -128,7 +128,7 @@ func TestQuote(t *testing.T) {
 		t.Error("Error fetching data for quote", err)
 	}
 
-	for _, tc := range testCases {
+	for _, tc := range quoteTestCases {
 		if fieldValue := getField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
@@ -137,7 +137,7 @@ func TestQuote(t *testing.T) {
 
 func TestStream(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write(serverData)
+		_, err := w.Write(quoteServerData)
 		if err != nil {
 			t.Error("Error writing response")
 		}
@@ -156,7 +156,7 @@ func TestStream(t *testing.T) {
 
 	receivedStock := <-stream
 
-	for _, tc := range testCases {
+	for _, tc := range quoteTestCases {
 		if fieldValue := getField(receivedStock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
