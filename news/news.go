@@ -55,12 +55,12 @@ func (n *News) Populate() (*News, error) {
 	if n.Config.Url != "" {
 		req, err = http.NewRequest("GET", n.Config.Url, nil)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error creating request: %v", err)
 		}
 	} else {
 		req, err = http.NewRequest("GET", fmt.Sprintf(url, n.Ticker), nil)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error creating request: %v", err)
 		}
 	}
 
@@ -69,7 +69,7 @@ func (n *News) Populate() (*News, error) {
 
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -81,13 +81,13 @@ func (n *News) Populate() (*News, error) {
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
 	var newsResponseData response
 	err = json.Unmarshal(body, &newsResponseData)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshalling response: %v", err)
 	}
 
 	if len(newsResponseData.News) == 0 {
