@@ -52,7 +52,7 @@ func (n *News) Populate() (*News, error) {
 	var req *http.Request
 	var err error
 
-	if n.Config.Url != "" {
+	if n.Config.Url != url {
 		req, err = http.NewRequest("GET", n.Config.Url, nil)
 		if err != nil {
 			return nil, fmt.Errorf("error creating request: %v", err)
@@ -84,6 +84,7 @@ func (n *News) Populate() (*News, error) {
 		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
+	fmt.Println(n.Config.Url)
 	var newsResponseData response
 	err = json.Unmarshal(body, &newsResponseData)
 	if err != nil {
