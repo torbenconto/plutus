@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
+	"github.com/torbenconto/plutus/internal/util"
 	"io"
 	"net/http"
 )
@@ -52,20 +53,10 @@ func (n *News) Populate() (*News, error) {
 	var req *http.Request
 	var err error
 
-	if n.Config.Url != url {
-		req, err = http.NewRequest("GET", n.Config.Url, nil)
-		if err != nil {
-			return nil, fmt.Errorf("error creating request: %v", err)
-		}
-	} else {
-		req, err = http.NewRequest("GET", fmt.Sprintf(url, n.Ticker), nil)
-		if err != nil {
-			return nil, fmt.Errorf("error creating request: %v", err)
-		}
+	req, err = util.BuildRequestFromConfig(req, n.Config, url, fmt.Sprintf(url, n.Ticker))
+	if err != nil {
+		return nil, fmt.Errorf("error building request: %v", err)
 	}
-
-	req.Header.Set("User-Agent", n.Config.UserAgent)
-	req.Header.Set("Cookie", n.Config.Cookie)
 
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -84,7 +75,6 @@ func (n *News) Populate() (*News, error) {
 		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
-	fmt.Println(n.Config.Url)
 	var newsResponseData response
 	err = json.Unmarshal(body, &newsResponseData)
 	if err != nil {
