@@ -10,7 +10,7 @@ import (
 )
 
 type response struct {
-	News []News `json:"news"`
+	News []Article `json:"news"`
 }
 
 type Article struct {
@@ -94,7 +94,7 @@ func (n *News) Populate() (*News, error) {
 		return nil, fmt.Errorf("no news found for %s", n.Ticker)
 	}
 
-	n.Articles = newsResponseData.News[0].Articles
+	n.Articles = newsResponseData.News
 
 	return n, nil
 }
