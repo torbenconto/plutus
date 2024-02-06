@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
+	"github.com/torbenconto/plutus/internal/util"
 	"github.com/torbenconto/plutus/interval"
 	"github.com/torbenconto/plutus/range"
 	"io"
 	"net/http"
-	"strings"
 )
 
 type Historical struct {
@@ -72,14 +72,10 @@ func (h *Historical) Populate() (*Historical, error) {
 	var req *http.Request
 	var err error
 
-	if strings.Count(h.Config.Url, "%s") == 3 {
-		req, err = http.NewRequest("GET", fmt.Sprintf(h.Config.Url, h.Ticker, h.Range.String(), h.Interval.String()), nil)
-	} else {
-		req, err = http.NewRequest("GET", h.Config.Url, nil)
+	req, err = util.BuildRequestFromConfig(req, h.Config, url, fmt.Sprintf(url, h.Ticker, h.Range, h.Interval))
+	if err != nil {
+		return nil, fmt.Errorf("error building request: %v", err)
 	}
-
-	req.Header.Set("User-Agent", plutus.UserAgent)
-	req.Header.Set("Cookie", plutus.Cookie)
 
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {

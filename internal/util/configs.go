@@ -1,0 +1,39 @@
+package util
+
+import (
+	"fmt"
+	"github.com/torbenconto/plutus"
+	"github.com/torbenconto/plutus/config"
+	"net/http"
+)
+
+func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, fallbackUrl string) (*http.Request, error) {
+	var err error
+
+	if conf.Url != url {
+		req, err = http.NewRequest("GET", conf.Url, nil)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		fmt.Println("Using fallback url")
+		req, err = http.NewRequest("GET", fallbackUrl, nil)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if conf.UserAgent != plutus.UserAgent {
+		req.Header.Set("User-Agent", conf.UserAgent)
+	} else {
+		req.Header.Set("User-Agent", plutus.UserAgent)
+	}
+
+	if conf.Cookie != plutus.Cookie {
+		req.Header.Set("Cookie", conf.Cookie)
+	} else {
+		req.Header.Set("Cookie", plutus.Cookie)
+	}
+
+	return req, nil
+}
