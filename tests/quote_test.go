@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"github.com/torbenconto/plutus/config"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -19,7 +20,9 @@ func TestQuote(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := quote.NewQuote("GOOG", server.URL)
+	stock, err := quote.NewQuote("GOOG", config.Config{
+		Url: server.URL,
+	})
 	if err != nil {
 		t.Error("Error fetching data for quote", err)
 	}
@@ -51,7 +54,9 @@ func TestQuoteStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := quote.NewQuote("GOOG", server.URL)
+	stock, err := quote.NewQuote("GOOG", config.Config{
+		Url: server.URL,
+	})
 	if err != nil {
 		t.Error("Error fetching data for quote", err)
 	}

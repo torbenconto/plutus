@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/torbenconto/plutus"
+	"github.com/torbenconto/plutus/config"
 	"github.com/torbenconto/plutus/interval"
 	"github.com/torbenconto/plutus/range"
 	"io"
@@ -16,8 +17,8 @@ type Historical struct {
 	Range    _range.Range
 	Interval interval.Interval
 	// Set of structs containing time and price data paired together
-	Data []PricePoint
-	URL  string
+	Data   []PricePoint
+	Config config.Config
 }
 
 type response struct {
@@ -47,18 +48,21 @@ type PricePoint struct {
 	Volume int64
 }
 
-func NewHistorical(ticker string, dateRange _range.Range, interval interval.Interval, apiUrl ...string) (*Historical, error) {
+func NewHistorical(ticker string, dateRange _range.Range, interval interval.Interval, historicalConfig ...config.Config) (*Historical, error) {
 	historical := &Historical{
 		Ticker:   ticker,
 		Range:    dateRange,
 		Interval: interval,
 	}
 
-	// apiUrl is mainly used for testing purposes, additional functionality will be added in the future
-	if len(apiUrl) > 0 {
-		historical.URL = apiUrl[0]
+	if len(historicalConfig) > 0 {
+		historical.Config = historicalConfig[0]
 	} else {
-		historical.URL = url
+		historical.Config = config.Config{
+			Url:       url,
+			UserAgent: plutus.UserAgent,
+			Cookie:    plutus.Cookie,
+		}
 	}
 
 	return historical.Populate()
@@ -68,10 +72,10 @@ func (h *Historical) Populate() (*Historical, error) {
 	var req *http.Request
 	var err error
 
-	if strings.Count(h.URL, "%s") == 3 {
-		req, err = http.NewRequest("GET", fmt.Sprintf(h.URL, h.Ticker, h.Range.String(), h.Interval.String()), nil)
+	if strings.Count(h.Config.Url, "%s") == 3 {
+		req, err = http.NewRequest("GET", fmt.Sprintf(h.Config.Url, h.Ticker, h.Range.String(), h.Interval.String()), nil)
 	} else {
-		req, err = http.NewRequest("GET", h.URL, nil)
+		req, err = http.NewRequest("GET", h.Config.Url, nil)
 	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)

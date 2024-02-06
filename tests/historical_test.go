@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"github.com/torbenconto/plutus/config"
 	"github.com/torbenconto/plutus/historical"
 	"github.com/torbenconto/plutus/interval"
 	_range "github.com/torbenconto/plutus/range"
@@ -19,7 +20,9 @@ func TestHistoricalPopulate(t *testing.T) {
 	}))
 	defer server.Close()
 
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, server.URL)
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
+		Url: server.URL,
+	})
 	if err != nil {
 		t.Error("Error fetching data for historical", err)
 	}
@@ -71,7 +74,9 @@ func TestHistoricalStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, server.URL)
+	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
+		Url: server.URL,
+	})
 	if err != nil {
 		t.Error("Error fetching data for historical", err)
 	}

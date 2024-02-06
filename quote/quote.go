@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/torbenconto/plutus"
+	"github.com/torbenconto/plutus/config"
 	"github.com/torbenconto/plutus/internal/util"
 	"io"
 	"net/http"
@@ -96,19 +97,23 @@ type Quote struct {
 	CryptoTradeable                   bool    `json:"cryptoTradeable"`
 	DisplayName                       string  `json:"displayName"`
 	Ticker                            string  `json:"symbol"`
-	URL                               string
+	Config                            config.Config
 }
 
 // NewQuote creates a new Quote instance for the given ticker. API url is optional
-func NewQuote(ticker string, apiUrl ...string) (*Quote, error) {
+func NewQuote(ticker string, quoteConfig ...config.Config) (*Quote, error) {
 	quote := &Quote{
 		Ticker: strings.ToUpper(ticker),
 	}
 
-	if len(apiUrl) > 0 {
-		quote.URL = apiUrl[0]
+	if len(quoteConfig) > 0 {
+		quote.Config = quoteConfig[0]
 	} else {
-		quote.URL = url
+		quote.Config = config.Config{
+			Url:       url,
+			UserAgent: plutus.UserAgent,
+			Cookie:    plutus.Cookie,
+		}
 	}
 
 	return quote.Populate()
@@ -119,15 +124,15 @@ func (q *Quote) Populate() (*Quote, error) {
 	var err error
 
 	// Get quote
-	if strings.Count(q.URL, "%s") < 2 {
-		req, err = http.NewRequest("GET", q.URL, nil)
+	if strings.Count(q.Config.Url, "%s") < 2 {
+		req, err = http.NewRequest("GET", q.Config.Url, nil)
 	} else {
 		// Get crumb
 		crumb, err := util.GetCrumb()
 		if err != nil {
 			return nil, fmt.Errorf("error getting crumb: %v", err)
 		}
-		req, err = http.NewRequest("GET", fmt.Sprintf(q.URL, crumb, q.Ticker), nil)
+		req, err = http.NewRequest("GET", fmt.Sprintf(q.Config.Url, crumb, q.Ticker), nil)
 	}
 
 	req.Header.Set("User-Agent", plutus.UserAgent)
@@ -166,8 +171,8 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error returned from API: no result returned")
 	}
 
-	// Url for complete struct data, necessary for Stream method
-	quoteResponseData.QuoteResponse.Result[0].URL = q.URL
+	// Complete struct data, necessary for Stream() method
+	quoteResponseData.QuoteResponse.Result[0].Config = q.Config
 
 	return &quoteResponseData.QuoteResponse.Result[0], nil
 }

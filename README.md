@@ -100,6 +100,26 @@ for {
 }
 ```
 
+#### Custom API url/request headers
+```go
+import "github.com/torbenconto/plutus/quote"
+import "github.com/torbenconto/plutus/config"
+
+// Create a new quote object with a custom API url and request headers
+stock, err := quote.NewQuote("AMD", config.Config{
+    Url: "https://example.com",
+    UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+	Cookie: "cookie1=cookie1; cookie2=cookie2",
+})
+
+// Create a new historical data object with a custom API url and request headers
+stock, err := historical.NewHistorical("AMD", _range.FiveDay, interval.OneMin, config.Config{
+    Url: "https://example.com",
+    UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    Cookie: "cookie1=cookie1; cookie2=cookie2",
+})
+```
+
 # REST api
 ## The repo containing the api and information about it is contained here [plutus-api](https://github.com/torbenconto/plutus-api)
 
