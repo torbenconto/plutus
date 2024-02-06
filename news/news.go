@@ -1,6 +1,10 @@
 package news
 
-import "github.com/torbenconto/plutus/config"
+import (
+	"fmt"
+	"github.com/torbenconto/plutus/config"
+	"net/http"
+)
 
 type response struct {
 	News []News `json:"news"`
@@ -22,4 +26,26 @@ func NewNews(symbol string, config config.Config) (*News, error) {
 	return &News{
 		Config: config,
 	}, nil
+}
+
+func (n *News) Populate() (*News, error) {
+	var req *http.Request
+	var err error
+
+	if n.Config.Url != "" {
+		req, err = http.NewRequest("GET", n.Config.Url, nil)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		req, err = http.NewRequest("GET", fmt.Sprintf(url, n.Ticker), nil)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	req.Header.Set("User-Agent", n.Config.UserAgent)
+	req.Header.Set("Cookie", n.Config.Cookie)
+
+	return n, nil
 }
