@@ -120,6 +120,21 @@ stock, err := historical.NewHistorical("AMD", _range.FiveDay, interval.OneMin, c
 })
 ```
 
+#### News
+```go
+import "github.com/torbenconto/plutus/news"
+// Create a new news object using the ticker of the stock you want news on.
+stock, err := news.NewNews("AMD")
+if err != nil {
+    fmt.Printf("An error occured: %e", err)
+}
+
+// Returns a list of all the news articles as structs containing the title, description, and url of the article.
+for _, article := range stock.Articles {
+    fmt.Println(article.Title, article.Description, article.Url)
+}
+```
+
 # REST api
 ## The repo containing the api and information about it is contained here [plutus-api](https://github.com/torbenconto/plutus-api)
 

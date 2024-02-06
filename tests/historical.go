@@ -1,5 +1,7 @@
 package tests
 
+import "github.com/torbenconto/plutus/historical"
+
 var historicalServerData = []byte(`
 	{
   "chart": {
@@ -46,14 +48,7 @@ var historicalServerData = []byte(`
   }
 }`)
 
-var historicalTestCases = []struct {
-	Time   int64
-	Open   float64
-	Close  float64
-	High   float64
-	Low    float64
-	Volume int64
-}{
+var historicalTestCases = []historical.PricePoint{
 	{1615891200, 16.0, 12.0, 13.6, 10.0, 212010},
 	{1615977600, 7.4, 14.6, 15.2, 12.2, 43021},
 	{1616064000, 9.62, 13.2, 7.2, 2.31, 350511},

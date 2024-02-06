@@ -4,7 +4,6 @@ import (
 	"github.com/torbenconto/plutus/config"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 	"time"
 
@@ -28,7 +27,7 @@ func TestQuote(t *testing.T) {
 	}
 
 	for _, tc := range quoteTestCases {
-		if fieldValue := getField(stock, tc.field); fieldValue != tc.value {
+		if fieldValue := GetField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
@@ -67,14 +66,8 @@ func TestQuoteStream(t *testing.T) {
 	receivedStock := <-stream
 
 	for _, tc := range quoteTestCases {
-		if fieldValue := getField(receivedStock, tc.field); fieldValue != tc.value {
+		if fieldValue := GetField(receivedStock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
-}
-
-func getField(s interface{}, field string) interface{} {
-	r := reflect.ValueOf(s)
-	f := reflect.Indirect(r).FieldByName(field)
-	return f.Interface()
 }
