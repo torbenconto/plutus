@@ -123,20 +123,15 @@ func (q *Quote) Populate() (*Quote, error) {
 	var req *http.Request
 	var err error
 
-	// Get quote
-	if strings.Count(q.Config.Url, "%s") < 2 {
-		req, err = http.NewRequest("GET", q.Config.Url, nil)
-	} else {
-		// Get crumb
-		crumb, err := util.GetCrumb()
-		if err != nil {
-			return nil, fmt.Errorf("error getting crumb: %v", err)
-		}
-		req, err = http.NewRequest("GET", fmt.Sprintf(q.Config.Url, crumb, q.Ticker), nil)
+	crumb, err := util.GetCrumb()
+	if err != nil {
+		return nil, fmt.Errorf("error fetching crumb: %v", err)
 	}
 
-	req.Header.Set("User-Agent", plutus.UserAgent)
-	req.Header.Set("Cookie", plutus.Cookie)
+	req, err = util.BuildRequestFromConfig(req, q.Config, url, fmt.Sprintf(url, crumb, q.Ticker))
+	if err != nil {
+		return nil, fmt.Errorf("error building request: %v", err)
+	}
 
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {

@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
 	"net/http"
@@ -16,7 +15,6 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, f
 			return nil, err
 		}
 	} else {
-		fmt.Println("Using fallback url")
 		req, err = http.NewRequest("GET", fallbackUrl, nil)
 		if err != nil {
 			return nil, err
