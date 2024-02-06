@@ -28,3 +28,16 @@ var indicatorData = []historical.PricePoint{
 		Volume: 20300,
 	},
 }
+
+var indicatorData2 = []historical.PricePoint{
+	{Close: 10.0},
+	{Close: 11.0},
+	{Close: 12.0},
+	{Close: 13.0},
+	{Close: 14.0},
+	{Close: 15.0},
+	{Close: 16.0},
+	{Close: 17.0},
+	{Close: 18.0},
+	{Close: 19.0},
+}
