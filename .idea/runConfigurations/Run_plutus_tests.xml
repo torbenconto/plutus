@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run plutus tests" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="plutus" />
+    <working_directory value="$PROJECT_DIR$" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/torbenconto/plutus" />
+    <directory value="$PROJECT_DIR$/tests" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
