@@ -1,8 +1,7 @@
-package tests
+package historical
 
 import (
 	"github.com/torbenconto/plutus/config"
-	"github.com/torbenconto/plutus/historical"
 	"github.com/torbenconto/plutus/interval"
 	_range "github.com/torbenconto/plutus/range"
 	"net/http"
@@ -57,7 +56,7 @@ var historicalServerData = []byte(`
   }
 }`)
 
-var historicalTestCases = []historical.PricePoint{
+var historicalTestCases = []PricePoint{
 	{1615891200, 16.0, 12.0, 13.6, 10.0, 212010},
 	{1615977600, 7.4, 14.6, 15.2, 12.2, 43021},
 	{1616064000, 9.62, 13.2, 7.2, 2.31, 350511},
@@ -72,7 +71,7 @@ func TestHistoricalPopulate(t *testing.T) {
 	}))
 	defer server.Close()
 
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
+	data, err := NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
 		Url: server.URL,
 	})
 	if err != nil {
@@ -107,7 +106,7 @@ func TestHistoricalPopulate(t *testing.T) {
 }
 
 func TestYahooHistoricalApi(t *testing.T) {
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
+	data, err := NewHistorical("GOOG", _range.OneDay, interval.OneMinute)
 	if err != nil {
 		t.Error("Error fetching data for historical", err)
 	}
@@ -126,7 +125,7 @@ func TestHistoricalStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	data, err := historical.NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
+	data, err := NewHistorical("GOOG", _range.OneDay, interval.OneMinute, config.Config{
 		Url: server.URL,
 	})
 	if err != nil {

@@ -1,13 +1,12 @@
-package tests
+package quote
 
 import (
 	"github.com/torbenconto/plutus/config"
+	"github.com/torbenconto/plutus/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"github.com/torbenconto/plutus/quote"
 )
 
 var quoteServerData = []byte(`{
@@ -121,7 +120,7 @@ func TestQuote(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := quote.NewQuote("GOOG", config.Config{
+	stock, err := NewQuote("GOOG", config.Config{
 		Url: server.URL,
 	})
 	if err != nil {
@@ -129,14 +128,14 @@ func TestQuote(t *testing.T) {
 	}
 
 	for _, tc := range quoteTestCases {
-		if fieldValue := GetField(stock, tc.field); fieldValue != tc.value {
+		if fieldValue := tests.GetField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
 }
 
 func TestYahooQuoteApi(t *testing.T) {
-	stock, err := quote.NewQuote("GOOG")
+	stock, err := NewQuote("GOOG")
 	if err != nil {
 		t.Error("Error fetching data for quote", err)
 	}
@@ -155,7 +154,7 @@ func TestQuoteStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := quote.NewQuote("GOOG", config.Config{
+	stock, err := NewQuote("GOOG", config.Config{
 		Url: server.URL,
 	})
 	if err != nil {
@@ -168,7 +167,7 @@ func TestQuoteStream(t *testing.T) {
 	receivedStock := <-stream
 
 	for _, tc := range quoteTestCases {
-		if fieldValue := GetField(receivedStock, tc.field); fieldValue != tc.value {
+		if fieldValue := tests.GetField(receivedStock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
