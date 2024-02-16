@@ -42,7 +42,7 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, f
 func MakeRequest(req *http.Request) ([]byte, error) {
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return nil, err
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -53,7 +53,7 @@ func MakeRequest(req *http.Request) ([]byte, error) {
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error reading response: %v", err)
+		return nil, err
 	}
 	return body, nil
 }
