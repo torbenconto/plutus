@@ -78,7 +78,7 @@ func (h *Historical) Populate() (*Historical, error) {
 
 	body, err := util.MakeRequest(req)
 	if err != nil {
-		return nil, fmt.Errorf("%v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
 	var chartResponse response

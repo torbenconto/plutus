@@ -59,7 +59,7 @@ func (n *News) Populate() (*News, error) {
 
 	body, err := util.MakeRequest(req)
 	if err != nil {
-		return nil, fmt.Errorf("%v", err)
+		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
 	var newsResponseData response
