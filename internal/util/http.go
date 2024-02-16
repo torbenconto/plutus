@@ -44,7 +44,12 @@ func MakeRequest(req *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
-	defer get.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}(get.Body)
 
 	body, err := io.ReadAll(get.Body)
 	if err != nil {
