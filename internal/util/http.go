@@ -1,8 +1,10 @@
 package util
 
 import (
+	"fmt"
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
+	"io"
 	"net/http"
 )
 
@@ -35,4 +37,23 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, f
 	}
 
 	return req, nil
+}
+
+func MakeRequest(req *http.Request) ([]byte, error) {
+	get, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}(get.Body)
+
+	body, err := io.ReadAll(get.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
 }

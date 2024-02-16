@@ -8,7 +8,6 @@ import (
 	"github.com/torbenconto/plutus/internal/util"
 	"github.com/torbenconto/plutus/interval"
 	"github.com/torbenconto/plutus/range"
-	"io"
 	"net/http"
 )
 
@@ -77,21 +76,9 @@ func (h *Historical) Populate() (*Historical, error) {
 		return nil, fmt.Errorf("error building request: %v", err)
 	}
 
-	get, err := http.DefaultClient.Do(req)
+	body, err := util.MakeRequest(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("Error:", err)
-		}
-	}(get.Body)
-
-	body, err := io.ReadAll(get.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading response: %v", err)
 	}
 
 	var chartResponse response
