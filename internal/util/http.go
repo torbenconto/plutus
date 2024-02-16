@@ -1,8 +1,10 @@
 package util
 
 import (
+	"fmt"
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
+	"io"
 	"net/http"
 )
 
@@ -35,4 +37,18 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, f
 	}
 
 	return req, nil
+}
+
+func MakeRequest(req *http.Request) ([]byte, error) {
+	get, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %v", err)
+	}
+	defer get.Body.Close()
+
+	body, err := io.ReadAll(get.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response: %v", err)
+	}
+	return body, nil
 }
