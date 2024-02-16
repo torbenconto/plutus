@@ -2,7 +2,7 @@ package quote
 
 import (
 	"github.com/torbenconto/plutus/config"
-	"github.com/torbenconto/plutus/tests"
+	"github.com/torbenconto/plutus/internal/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"

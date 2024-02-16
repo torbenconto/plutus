@@ -146,7 +146,7 @@ Please use the provided examples to guide you to using plutus to it's full poten
 ### Tests
 To run the tests for the library, simply run the following command in the root of the project.
 ```sh
-    go test ./tests
+    go test ./...
 ```
 
 # Future Features
