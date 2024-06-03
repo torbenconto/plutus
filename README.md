@@ -150,7 +150,6 @@ To run the tests for the library, simply run the following command in the root o
 ```
 
 # Future Features
-- [ ] Related News Articles
 - [x] Historical Data
 - [x] Price Estimates
 - [ ] Crypto Currency Support
