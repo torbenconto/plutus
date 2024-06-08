@@ -6,7 +6,6 @@ import (
 	"github.com/torbenconto/plutus"
 	"github.com/torbenconto/plutus/config"
 	"github.com/torbenconto/plutus/internal/util"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -98,14 +97,14 @@ func (d *DividendInfo) Populate() (*DividendInfo, error) {
 		case "Dividend Yield":
 			yield, err := strconv.ParseFloat(strings.TrimSuffix(value.Value, "%"), 64)
 			if err != nil {
-				log.Fatal(err)
+				return nil, fmt.Errorf("error parsing into struct: %v", err)
 			}
 			d.DividendYield = yield
 
 		case "Annual Dividend":
 			dividend, err := strconv.ParseFloat(strings.TrimPrefix(value.Value, "$"), 64)
 			if err != nil {
-				log.Fatal(err)
+				return nil, fmt.Errorf("error parsing into struct: %v", err)
 			}
 			d.AnnualDividendAmount = dividend
 		}
