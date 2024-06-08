@@ -1,4 +1,4 @@
-package quote
+package stock
 
 import (
 	"github.com/torbenconto/plutus/config"
@@ -124,7 +124,7 @@ func TestQuote(t *testing.T) {
 		Url: server.URL,
 	})
 	if err != nil {
-		t.Error("Error fetching data for quote", err)
+		t.Error("Error fetching data for stock", err)
 	}
 
 	for _, tc := range quoteTestCases {
@@ -137,7 +137,7 @@ func TestQuote(t *testing.T) {
 func TestYahooQuoteApi(t *testing.T) {
 	stock, err := NewQuote("GOOG")
 	if err != nil {
-		t.Error("Error fetching data for quote", err)
+		t.Error("Error fetching data for stock", err)
 	}
 
 	if stock == nil {
@@ -158,7 +158,7 @@ func TestQuoteStream(t *testing.T) {
 		Url: server.URL,
 	})
 	if err != nil {
-		t.Error("Error fetching data for quote", err)
+		t.Error("Error fetching data for stock", err)
 	}
 
 	delay := time.Second * 1

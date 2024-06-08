@@ -1,4 +1,4 @@
-package quote
+package stock
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type response struct {
+type quoteResponse struct {
 	QuoteResponse struct {
 		Result []Quote           `json:"result"`
 		Error  map[string]string `json:"error"`
@@ -99,7 +99,7 @@ type Quote struct {
 	Config                            config.Config
 }
 
-// NewQuote creates a new Quote instance for the given ticker. API url is optional
+// NewQuote creates a new Quote instance for the given ticker. Config is optional
 func NewQuote(ticker string, quoteConfig ...config.Config) (*Quote, error) {
 	quote := &Quote{
 		Ticker: strings.ToUpper(ticker),
@@ -109,7 +109,7 @@ func NewQuote(ticker string, quoteConfig ...config.Config) (*Quote, error) {
 		quote.Config = quoteConfig[0]
 	} else {
 		quote.Config = config.Config{
-			Url:       url,
+			Url:       quoteUrl,
 			UserAgent: plutus.UserAgent,
 			Cookie:    plutus.Cookie,
 		}
@@ -127,17 +127,17 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error fetching crumb: %v", err)
 	}
 
-	req, err = util.BuildRequestFromConfig(req, q.Config, url, fmt.Sprintf(url, crumb, q.Ticker))
+	req, err = util.BuildRequestFromConfig(req, q.Config, quoteUrl, fmt.Sprintf(quoteUrl, crumb, q.Ticker))
 	if err != nil {
 		return nil, fmt.Errorf("error building request: %v", err)
 	}
 
-	body, err := util.MakeRequest(req)
+	body, err := util.PerformRequest(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
 
-	var quoteResponseData response
+	var quoteResponseData quoteResponse
 	err = json.Unmarshal(body, &quoteResponseData)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)

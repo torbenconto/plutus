@@ -76,7 +76,7 @@ func (h *Historical) Populate() (*Historical, error) {
 		return nil, fmt.Errorf("error building request: %v", err)
 	}
 
-	body, err := util.MakeRequest(req)
+	body, err := util.PerformRequest(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}

@@ -18,8 +18,8 @@ Download the library into your existing golang project
 
 Create a new stock Quote using the ticker of the stock you want data on.
 ```go
-import "github.com/torbenconto/plutus/quote"
-stock, err := quote.NewQuote("AMD")
+import "github.com/torbenconto/plutus/stock"
+stock, err := stock.NewQuote("AMD")
 if err != nil {
 	fmt.Printf("An error occured: %e", err)
 }
@@ -33,15 +33,15 @@ Done!, now you can access many different aspects of the stock including price, v
 
 #### Quote
 ```go
-import "github.com/torbenconto/plutus/quote"
-stock, err := quote.NewQuote("AMD")
+import "github.com/torbenconto/plutus/stock"
+stock, err := stock.NewQuote("AMD")
 if err != nil {
     fmt.Printf("An error occured: %e", err)
 }
 ```
 #### Quote Data Stream
 ```go
-import "github.com/torbenconto/plutus/quote"
+import "github.com/torbenconto/plutus/stock"
 stock, err := quote.NewQuote("AMD")
 if err != nil {
     fmt.Printf("An error occured: %e", err)
@@ -52,7 +52,7 @@ delay := time.Second
 // Call stream func using Stock object and a given delay
 stream := stock.Stream(delay)
 
-// Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
+// Get updated data and print out most recent stock price. Runs infinently and returns the newest avalible stock data in the form of a plutus.Stock struct
 for {
     data := <-stream
     fmt.Println(data.RegularMarketPrice, data.RegularMarketChangePercent)
@@ -93,7 +93,7 @@ delay := time.Second
 // Call stream func using Stock object and a given delay
 stream := stock.Stream(delay)
 
-// Get updated data and print out most recent quote price. Runs infinently and returns the newest avalible quote data in the form of a plutus.Stock struct
+// Get updated data and print out most recent stock price. Runs infinently and returns the newest avalible stock data in the form of a plutus.Stock struct
 for {
     data := <-stream
     fmt.Println(data.RegularMarketPrice, data.RegularMarketChangePercent)
@@ -102,10 +102,10 @@ for {
 
 #### Custom API url/request headers
 ```go
-import "github.com/torbenconto/plutus/quote"
+import "github.com/torbenconto/plutus/stock"
 import "github.com/torbenconto/plutus/config"
 
-// Create a new quote object with a custom API url and request headers
+// Create a new stock object with a custom API url and request headers
 stock, err := quote.NewQuote("AMD", config.Config{
     Url: "https://example.com",
     UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -120,18 +120,13 @@ stock, err := historical.NewHistorical("AMD", _range.FiveDay, interval.OneMin, c
 })
 ```
 
-#### News
+#### Dividend Info
 ```go
-import "github.com/torbenconto/plutus/news"
-// Create a new news object using the ticker of the stock you want news on.
-stock, err := news.NewNews("AMD")
-if err != nil {
-    fmt.Printf("An error occured: %e", err)
-}
+import "github.com/torbenconto/plutus/stock"
 
-// Returns a list of all the news articles as structs containing the title, description, and url of the article.
-for _, article := range stock.Articles {
-    fmt.Println(article.Title, article.Description, article.Url)
+info, err := stock.NewDividendInfo("T")
+if err != nil {
+	fmt.Printf("An error occured: %s\n", err)
 }
 ```
 
@@ -153,6 +148,5 @@ To run the tests for the library, simply run the following command in the root o
 - [x] Historical Data
 - [x] Price Estimates
 - [ ] Crypto Currency Support
-
 
 And More..

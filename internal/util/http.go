@@ -9,16 +9,16 @@ import (
 )
 
 // BuildRequestFromConfig modifies a http.Request from a config.Config. url is the un-formatted url, fallback url is the complete, formatted url.
-func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, fallbackUrl string) (*http.Request, error) {
+func BuildRequestFromConfig(req *http.Request, conf config.Config, unformattedUrl string, fullUrl string) (*http.Request, error) {
 	var err error
 
-	if conf.Url != url {
+	if conf.Url != unformattedUrl {
 		req, err = http.NewRequest("GET", conf.Url, nil)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		req, err = http.NewRequest("GET", fallbackUrl, nil)
+		req, err = http.NewRequest("GET", fullUrl, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -39,7 +39,7 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, url string, f
 	return req, nil
 }
 
-func MakeRequest(req *http.Request) ([]byte, error) {
+func PerformRequest(req *http.Request) ([]byte, error) {
 	get, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
