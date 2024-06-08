@@ -13,12 +13,12 @@ func BuildRequestFromConfig(req *http.Request, conf config.Config, unformattedUr
 	var err error
 
 	if conf.Url != unformattedUrl {
-		req, err = http.NewRequest("GET", conf.Url, nil)
+		req, err = http.NewRequest("GET", conf.Url, http.NoBody)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		req, err = http.NewRequest("GET", fullUrl, nil)
+		req, err = http.NewRequest("GET", fullUrl, http.NoBody)
 		if err != nil {
 			return nil, err
 		}
