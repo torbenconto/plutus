@@ -71,7 +71,7 @@ func (h *Historical) Populate() (*Historical, error) {
 	var req *http.Request
 	var err error
 
-	req, err = util.BuildRequestFromConfig(req, h.Config, url, fmt.Sprintf(url, h.Ticker, h.Range, h.Interval))
+	req, err = util.BuildRequestFromConfig(h.Config, url, fmt.Sprintf(url, h.Ticker, h.Range, h.Interval))
 	if err != nil {
 		return nil, fmt.Errorf("error building request: %v", err)
 	}

@@ -54,7 +54,7 @@ func (d *DividendInfo) Populate() (*DividendInfo, error) {
 	var req *http.Request
 	var err error
 
-	req, err = util.BuildRequestFromConfig(req, d.Config, dividendUrl, fmt.Sprintf(dividendUrl, d.Ticker))
+	req, err = util.BuildRequestFromConfig(d.Config, dividendUrl, fmt.Sprintf(dividendUrl, d.Ticker))
 	if err != nil {
 		return nil, fmt.Errorf("error building request %v", err)
 	}

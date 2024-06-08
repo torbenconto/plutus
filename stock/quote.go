@@ -127,7 +127,7 @@ func (q *Quote) Populate() (*Quote, error) {
 		return nil, fmt.Errorf("error fetching crumb: %v", err)
 	}
 
-	req, err = util.BuildRequestFromConfig(req, q.Config, quoteUrl, fmt.Sprintf(quoteUrl, crumb, q.Ticker))
+	req, err = util.BuildRequestFromConfig(q.Config, quoteUrl, fmt.Sprintf(quoteUrl, crumb, q.Ticker))
 	if err != nil {
 		return nil, fmt.Errorf("error building request: %v", err)
 	}
