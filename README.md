@@ -150,3 +150,6 @@ To run the tests for the library, simply run the following command in the root o
 - [ ] Crypto Currency Support
 
 And More..
+
+# Notes
+Please only use this module for personal use.
