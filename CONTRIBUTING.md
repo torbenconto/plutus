@@ -1,6 +1,6 @@
 Contributing to Plutus
 
-Thank you for considering to contribute to Plutus! The jas assembler is a project that is developed by me. I am always looking for new contributors to help us improve this library. This guide is for DEVELOPERS looking to commit code to the Jas assembler. If you are looking to report a bug or request a feature, please see https://github.com/cheng-alvin/jas/issues.
+Thank you for considering to contribute to Plutus! The plutus library is a project that is developed by me. I am always looking for new contributors to help us improve this library. This guide is for DEVELOPERS looking to commit code to the plutus library. If you are looking to report a bug or request a feature, please see https://github.com/torbenconto/plutus/issues.
 Getting started
 
 For beginners and those who are new to Git and GitHub, please see https://guides.github.com/activities/hello-world/ for a quick tutorial on how to get started with Git and GitHub. Now, please follow the steps below to get started with contributing to Plutus (especially for those who are not familiar with Git).
