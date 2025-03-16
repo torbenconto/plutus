@@ -31,3 +31,4 @@ To run the tests for the library, simply run the following command in the root o
 
 # Notes
 Please only use this module for personal use.
+Don't overload my deployment or ill get really sad 🥲.
