@@ -16,6 +16,45 @@ Download the library into your existing golang project
     go get -u github.com/torbenconto/plutus@latest
 ```
 
+## Basic Usage
+```go
+import "github.com/torbenconto/plutus"
+stock, err := plutus.GetQuote("AMD")
+if err != nil {
+	fmt.Printf("An error occured: %e", err)
+}
+fmt.Printf("The current price of AMD is: %f", stock.RegularMarketPrice)
+```
+
+### Historical Data
+
+```go
+import "github.com/torbenconto/plutus"
+import _range "github.com/torbenconto/plutus/range"
+import "github.com/torbenconto/plutus/interval"
+
+// Create a new historical data object using the ticker of the stock you want data on as well as the range and interval of the data.
+stock, err := plutus.GetHistoricalQuote("AMD", _range.FiveDay, interval.OneMin)
+if err != nil {
+    fmt.Printf("An error occured: %e", err)
+}
+
+// Returns a list of all the data points as structs containing the time in unix time and the price of the stock at that time.
+for _, data := range stock.Data {
+    fmt.Println(data.Time, data.Open, data.Close, data.High, data.Low, data.Volume)
+}
+```
+
+### Dividends
+```go
+import "github.com/torbenconto/plutus/stock"
+
+info, err := stock.NewDividendInfo("T")
+if err != nil {
+	fmt.Printf("An error occured: %s\n", err)
+}
+```
+
 # REST api
 ## The repo containing the api and information about it is contained here [plutus-api](https://github.com/torbenconto/plutus-api)
 
