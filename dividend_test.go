@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/torbenconto/plutus"
+	"github.com/torbenconto/plutus/v2"
 )
 
 var dividendServerData = []byte(`{
