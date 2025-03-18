@@ -1,4 +1,4 @@
-module github.com/torbenconto/plutus
+module github.com/torbenconto/plutus/v2
 
 go 1.23.4
 

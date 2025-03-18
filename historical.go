@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/torbenconto/plutus/interval"
-	_range "github.com/torbenconto/plutus/range"
+	"github.com/torbenconto/plutus/v2/interval"
+	_range "github.com/torbenconto/plutus/v2/range"
 )
 
 type HistoricalPricePoint struct {

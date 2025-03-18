@@ -5,9 +5,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/torbenconto/plutus"
-	"github.com/torbenconto/plutus/interval"
-	_range "github.com/torbenconto/plutus/range"
+	"github.com/torbenconto/plutus/v2"
+	"github.com/torbenconto/plutus/v2/interval"
+	_range "github.com/torbenconto/plutus/v2/range"
 )
 
 var historicalServerData = []byte(`

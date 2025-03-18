@@ -13,7 +13,7 @@
 ### Quick Start
 Download the library into your existing golang project
 ```sh
-    go get -u github.com/torbenconto/plutus@latest
+    go get -u github.com/torbenconto/plutus/v2
 ```
 
 ## Basic Usage
