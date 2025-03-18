@@ -17,3 +17,7 @@ func historicalUrl(symbol string, _range string, interval string) string {
 
 const useragent = "Mozilla/5.0 Plutus/2.0"
 const cookie = "A1=d=AQABBJa6ZGUCENTrtXZe-SIkJXEfX8ySTV8FEgEACAINl2XBZdwx0iMA_eMBAAcIlrpkZcySTV8ID4OikZ64YJY1AyPq3hVnIwkBBwoBYg&S=AQAAAgfHJ22fM3FOY15li56pu8k;"
+
+func dividendUrl(symbol string) string {
+	return fmt.Sprintf("https://api.nasdaq.com/api/quote/%s/dividends?assetclass=stocks", symbol)
+}
