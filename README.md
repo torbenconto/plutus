@@ -47,9 +47,9 @@ for _, data := range stock.Data {
 
 ### Dividends
 ```go
-import "github.com/torbenconto/plutus/stock"
+import "github.com/torbenconto/plutus"
 
-info, err := stock.NewDividendInfo("T")
+info, err := plutus.GetDividendInfo("T")
 if err != nil {
 	fmt.Printf("An error occured: %s\n", err)
 }
