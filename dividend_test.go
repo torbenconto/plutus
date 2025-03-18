@@ -1,12 +1,12 @@
-package stock
+package plutus_test
 
 import (
-	"github.com/torbenconto/plutus/config"
-	"github.com/torbenconto/plutus/internal/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/torbenconto/plutus"
 )
 
 var dividendServerData = []byte(`{
@@ -175,15 +175,13 @@ func TestDividend(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := NewDividendInfo("RWAY", config.Config{
-		Url: server.URL,
-	})
+	stock, err := plutus.GetDividendInfo("RWAY", server.URL)
 	if err != nil {
 		t.Error("Error fetching data for stock", err)
 	}
 
 	for _, tc := range dividendTestCases {
-		if fieldValue := tests.GetField(stock, tc.field); fieldValue != tc.value {
+		if fieldValue := getField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
@@ -191,7 +189,7 @@ func TestDividend(t *testing.T) {
 
 func TestNasdaqDividendApi(t *testing.T) {
 	// Use a well known dividend stock
-	stock, err := NewDividendInfo("T")
+	stock, err := plutus.GetDividendInfo("T")
 	if err != nil {
 		t.Error("Error fetching data for stock", err)
 	}

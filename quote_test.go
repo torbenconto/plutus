@@ -1,12 +1,11 @@
-package stock
+package plutus_test
 
 import (
-	"github.com/torbenconto/plutus/config"
-	"github.com/torbenconto/plutus/internal/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
+
+	"github.com/torbenconto/plutus"
 )
 
 var quoteServerData = []byte(`{
@@ -120,55 +119,25 @@ func TestQuote(t *testing.T) {
 	}))
 	defer server.Close()
 
-	stock, err := NewQuote("GOOG", config.Config{
-		Url: server.URL,
-	})
+	stock, err := plutus.GetQuote("GOOG", server.URL)
 	if err != nil {
-		t.Error("Error fetching data for stock", err)
+		t.Error(err)
 	}
 
 	for _, tc := range quoteTestCases {
-		if fieldValue := tests.GetField(stock, tc.field); fieldValue != tc.value {
+		if fieldValue := getField(stock, tc.field); fieldValue != tc.value {
 			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
 		}
 	}
 }
 
 func TestYahooQuoteApi(t *testing.T) {
-	stock, err := NewQuote("GOOG")
+	stock, err := plutus.GetQuote("GOOG")
 	if err != nil {
-		t.Error("Error fetching data for stock", err)
+		t.Error(err)
 	}
 
 	if stock == nil {
 		t.Error("Stock is nil")
-	}
-}
-
-func TestQuoteStream(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write(quoteServerData)
-		if err != nil {
-			t.Error("Error writing response")
-		}
-	}))
-	defer server.Close()
-
-	stock, err := NewQuote("GOOG", config.Config{
-		Url: server.URL,
-	})
-	if err != nil {
-		t.Error("Error fetching data for stock", err)
-	}
-
-	delay := time.Second * 1
-	stream := stock.Stream(delay)
-
-	receivedStock := <-stream
-
-	for _, tc := range quoteTestCases {
-		if fieldValue := tests.GetField(receivedStock, tc.field); fieldValue != tc.value {
-			t.Errorf("Expected %s to be %v, got %v", tc.field, tc.value, fieldValue)
-		}
 	}
 }

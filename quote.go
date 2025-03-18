@@ -1,42 +1,35 @@
-package stock
+package plutus
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/torbenconto/plutus"
-	"github.com/torbenconto/plutus/config"
-	"github.com/torbenconto/plutus/internal/util"
+	"io"
 	"net/http"
-	"strings"
 )
 
-type quoteResponse struct {
-	QuoteResponse struct {
-		Result []Quote           `json:"result"`
-		Error  map[string]string `json:"error"`
-	} `json:"quoteResponse"`
-}
-
 type Quote struct {
-	Language                          string  `json:"language"`
-	Region                            string  `json:"region"`
-	QuoteType                         string  `json:"quoteType"`
-	TypeDisp                          string  `json:"typeDisp"`
-	QuoteSourceName                   string  `json:"quoteSourceName"`
-	Triggerable                       bool    `json:"triggerable"`
-	CustomPriceAlertConfidence        string  `json:"customPriceAlertConfidence"`
-	Currency                          string  `json:"currency"`
-	MarketState                       string  `json:"marketState"`
-	RegularMarketChangePercent        float64 `json:"regularMarketChangePercent"`
-	RegularMarketPrice                float64 `json:"regularMarketPrice"`
-	Exchange                          string  `json:"exchange"`
-	ShortName                         string  `json:"shortName"`
-	LongName                          string  `json:"longName"`
-	MessageBoardID                    string  `json:"messageBoardId"`
-	ExchangeTimezoneName              string  `json:"exchangeTimezoneName"`
-	ExchangeTimezoneShortName         string  `json:"exchangeTimezoneShortName"`
-	GmtOffSetMilliseconds             int     `json:"gmtOffSetMilliseconds"`
-	Market                            string  `json:"market"`
+	Language                   string  `json:"language"`
+	Region                     string  `json:"region"`
+	QuoteType                  string  `json:"quoteType"`
+	TypeDisp                   string  `json:"typeDisp"`
+	QuoteSourceName            string  `json:"quoteSourceName"`
+	Triggerable                bool    `json:"triggerable"`
+	CustomPriceAlertConfidence string  `json:"customPriceAlertConfidence"`
+	Currency                   string  `json:"currency"`
+	MarketState                string  `json:"marketState"`
+	RegularMarketChangePercent float64 `json:"regularMarketChangePercent"`
+	RegularMarketPrice         float64 `json:"regularMarketPrice"`
+	Exchange                   string  `json:"exchange"`
+	ShortName                  string  `json:"shortName"`
+	LongName                   string  `json:"longName"`
+	MessageBoardID             string  `json:"messageBoardId"`
+	ExchangeTimezoneName       string  `json:"exchangeTimezoneName"`
+	ExchangeTimezoneShortName  string  `json:"exchangeTimezoneShortName"`
+	GmtOffSetMilliseconds      int     `json:"gmtOffSetMilliseconds"`
+	Market                     string  `json:"market"`
+	/* ESG is a coercive, top-down framework that undermines free markets by allowing corporate giants like BlackRock to push ideological agendas under the guise of “social responsibility.”
+	Instead of letting consumers and investors decide what values matter, ESG enables powerful financial institutions to thier ideologies, favoring companies that comply with politically motivated criteria while punishing those that prioritize profit and shareholder value.
+	This distorts market competition, reduces economic freedom, and allows unelected elites to dictate corporate behavior, all while firms like BlackRock profit from state-backed subsidies and regulatory capture. */
 	EsgPopulated                      bool    `json:"esgPopulated"`
 	FirstTradeDateMilliseconds        int64   `json:"firstTradeDateMilliseconds"`
 	PriceHint                         int     `json:"priceHint"`
@@ -96,65 +89,67 @@ type Quote struct {
 	CryptoTradeable                   bool    `json:"cryptoTradeable"`
 	DisplayName                       string  `json:"displayName"`
 	Ticker                            string  `json:"symbol"`
-	Config                            config.Config
 }
 
-// NewQuote creates a new Quote instance for the given ticker. Config is optional
-func NewQuote(ticker string, quoteConfig ...config.Config) (*Quote, error) {
-	quote := &Quote{
-		Ticker: strings.ToUpper(ticker),
+type quoteResponse struct {
+	QuoteResponse struct {
+		Result []Quote           `json:"result"`
+		Error  map[string]string `json:"error"`
+	} `json:"quoteResponse"`
+}
+
+/*
+GetQuote returns a Quote struct for the given symbol. If the symbol is not found, an error is returned.
+the url parameter is optional and is used for testing purposes.
+*/
+func GetQuote(symbol string, url ...string) (*Quote, error) {
+	crumb, err := getCrumb()
+	if err != nil {
+		return nil, fmt.Errorf("could not get crumb: %v", err)
 	}
 
-	if len(quoteConfig) > 0 {
-		quote.Config = quoteConfig[0]
+	var usedUrl string
+	if len(url) > 0 {
+		usedUrl = url[0]
 	} else {
-		quote.Config = config.Config{
-			Url:       quoteUrl,
-			UserAgent: plutus.UserAgent,
-			Cookie:    plutus.Cookie,
-		}
+		usedUrl = quoteUrl([]string{symbol}, crumb)
 	}
 
-	return quote.Populate()
-}
-
-func (q *Quote) Populate() (*Quote, error) {
-	var req *http.Request
-	var err error
-
-	crumb, err := util.GetCrumb()
+	req, err := http.NewRequest(http.MethodGet, usedUrl, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching crumb: %v", err)
+		return nil, fmt.Errorf("could not create request: %v", err)
 	}
 
-	req, err = util.BuildRequestFromConfig(q.Config, quoteUrl, fmt.Sprintf(quoteUrl, crumb, q.Ticker))
+	req.Header.Set("User-Agent", useragent)
+	req.Header.Set("Cookie", cookie)
+
+	get, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error building request: %v", err)
+		return nil, fmt.Errorf("could not send request: %v", err)
+	}
+	defer get.Body.Close()
+
+	if get.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("could not get quote: %v", err)
 	}
 
-	body, err := util.PerformRequest(req)
+	body, err := io.ReadAll(get.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
+		return nil, fmt.Errorf("could not read response: %v", err)
 	}
 
-	var quoteResponseData quoteResponse
-	err = json.Unmarshal(body, &quoteResponseData)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshalling response: %v", err)
+	var qr quoteResponse
+	if err := json.Unmarshal(body, &qr); err != nil {
+		return nil, fmt.Errorf("could not unmarshal response: %v", err)
 	}
 
-	// Check if the Error field is not nil
-	if quoteResponseData.QuoteResponse.Error != nil {
-		return nil, fmt.Errorf("error returned from API: %s, %s", quoteResponseData.QuoteResponse.Error["code"], quoteResponseData.QuoteResponse.Error["description"])
+	if len(qr.QuoteResponse.Error) > 0 {
+		return nil, fmt.Errorf("error returned from API: %s, %s", qr.QuoteResponse.Error["code"], qr.QuoteResponse.Error["description"])
 	}
 
-	// Check if the Result field is empty
-	if len(quoteResponseData.QuoteResponse.Result) == 0 {
-		return nil, fmt.Errorf("error returned from API: no result returned")
+	if len(qr.QuoteResponse.Result) == 0 {
+		return nil, fmt.Errorf("no results returned from API")
 	}
 
-	// Complete struct data, necessary for Stream() method
-	quoteResponseData.QuoteResponse.Result[0].Config = q.Config
-
-	return &quoteResponseData.QuoteResponse.Result[0], nil
+	return &qr.QuoteResponse.Result[0], nil
 }
