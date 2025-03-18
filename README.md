@@ -18,7 +18,7 @@ Download the library into your existing golang project
 
 ## Basic Usage
 ```go
-import "github.com/torbenconto/plutus"
+import "github.com/torbenconto/plutus/v2"
 stock, err := plutus.GetQuote("AMD")
 if err != nil {
 	fmt.Printf("An error occured: %e", err)
@@ -29,9 +29,9 @@ fmt.Printf("The current price of AMD is: %f", stock.RegularMarketPrice)
 ### Historical Data
 
 ```go
-import "github.com/torbenconto/plutus"
-import _range "github.com/torbenconto/plutus/range"
-import "github.com/torbenconto/plutus/interval"
+import "github.com/torbenconto/plutus/v2"
+import _range "github.com/torbenconto/plutus/v2/range"
+import "github.com/torbenconto/plutus/v2/interval"
 
 // Create a new historical data object using the ticker of the stock you want data on as well as the range and interval of the data.
 stock, err := plutus.GetHistoricalQuote("AMD", _range.FiveDay, interval.OneMin)
@@ -47,7 +47,7 @@ for _, data := range stock.Data {
 
 ### Dividends
 ```go
-import "github.com/torbenconto/plutus"
+import "github.com/torbenconto/plutus/v2"
 
 info, err := plutus.GetDividendInfo("T")
 if err != nil {
