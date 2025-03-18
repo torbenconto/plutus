@@ -37,6 +37,10 @@ type historicalQuoteResponse struct {
 	} `json:"chart"`
 }
 
+/*
+GetHistoricalQuote returns a slice of HistoricalPricePoint structs for the given symbol, range, and interval. If the symbol is not found, an error is returned.
+The url parameter is optional and is used for testing purposes.
+*/
 func GetHistoricalQuote(symbol string, r _range.Range, i interval.Interval, url ...string) (*[]HistoricalPricePoint, error) {
 	var usedUrl string
 	if len(url) > 0 {

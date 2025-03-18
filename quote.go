@@ -98,6 +98,10 @@ type quoteResponse struct {
 	} `json:"quoteResponse"`
 }
 
+/*
+GetQuote returns a Quote struct for the given symbol. If the symbol is not found, an error is returned.
+the url parameter is optional and is used for testing purposes.
+*/
 func GetQuote(symbol string, url ...string) (*Quote, error) {
 	crumb, err := getCrumb()
 	if err != nil {
